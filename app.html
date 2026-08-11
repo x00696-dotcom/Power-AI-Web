@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Power AI V05 Secure</title>
+<style>
+:root{
+  --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#667085; --line:#d9dee8;
+  --accent:#315efb; --accent2:#eef2ff; --good:#087443; --goodbg:#e9f8f0;
+  --bad:#b42318; --badbg:#fdecec; --warn:#9a6700; --warnbg:#fff7db;
+}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI","Noto Sans TC",sans-serif;background:var(--bg);color:var(--text)}
+header{background:#111827;color:white;padding:18px 24px}
+header .brand{font-size:20px;font-weight:700}
+header .sub{opacity:.75;margin-top:4px;font-size:13px}
+main{max-width:1200px;margin:24px auto;padding:0 16px 60px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.feature{min-height:145px;cursor:pointer}.feature.active{border:2px solid var(--accent)}
+h1,h2,h3{margin-top:0}.muted{color:var(--muted)}
+.badge{display:inline-block;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:700}
+.badge.good{background:var(--goodbg);color:var(--good)}
+.badge.bad{background:var(--badbg);color:var(--bad)}
+.badge.warn{background:var(--warnbg);color:var(--warn)}
+.badge.info{background:var(--accent2);color:var(--accent)}
+.section{margin-top:18px}
+.upload{border:2px dashed #aab4c5;border-radius:14px;padding:24px;text-align:center;background:#fbfcff}
+input[type=file]{margin:12px 0}
+input[type=text], input[type=number], select{width:100%;padding:10px 12px;border:1px solid #cbd2dc;border-radius:10px;font-size:15px;background:white}
+button{border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+button.primary{background:var(--accent);color:white}
+button.secondary{background:#eef1f6;color:#243047}
+button:disabled{opacity:.45;cursor:not-allowed}
+.metricrow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.metric{background:white;border:1px solid var(--line);border-radius:14px;padding:14px}
+.metric b{display:block;font-size:26px;margin-top:4px}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px;background:white}
+table{border-collapse:collapse;width:100%;min-width:950px}
+th,td{padding:10px 11px;border-bottom:1px solid #edf0f4;text-align:left;font-size:13px;white-space:nowrap}
+th{background:#f7f8fb;position:sticky;top:0}
+.netgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.netitem{border:1px solid var(--line);border-radius:10px;padding:10px;background:white}
+.netitem label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.notice{padding:12px 14px;border-radius:10px;background:var(--accent2);color:#2444b8}
+.hidden{display:none!important}
+.searchrow{display:grid;grid-template-columns:1fr 170px;gap:10px}
+.specgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.speccell{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.speccell .k{color:var(--muted);font-size:12px}.speccell .v{margin-top:4px;font-weight:700}
+.score{font-size:20px;font-weight:800}
+.small{font-size:12px}
+.rank1{background:#fffdf3}
+.note{font-size:12px;color:var(--muted);margin-top:10px}
+.dsbtn{display:inline-block;text-decoration:none;border-radius:9px;padding:7px 10px;font-size:12px;font-weight:700;background:var(--accent2);color:var(--accent);border:1px solid #cfd7ff}
+.dsbtn:hover{text-decoration:underline}
+.rulelist{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.rulechip{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:5px 8px;background:#fff}
+.progressbar{height:8px;background:#e9edf4;border-radius:999px;overflow:hidden;margin-top:8px}.progressbar>div{height:100%;background:var(--accent);width:0%}
+.module{display:none}.module.active{display:block}
+.checks{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.checkpill{border:1px solid var(--line);border-radius:999px;padding:7px 10px;font-size:12px;background:white}
+@media(max-width:800px){.grid,.metricrow,.netgrid,.specgrid,.searchrow{grid-template-columns:1fr}.feature{min-height:auto}}
+
+#passGate{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#0f172a,#111827 50%,#1f2937);font-family:Inter,system-ui,-apple-system,'Segoe UI','Noto Sans TC',sans-serif}
+#passGate.hidden{display:none}.pass-card{width:min(430px,100%);background:#fff;border-radius:20px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.28)}
+.pass-brand{font-size:13px;font-weight:800;letter-spacing:.08em;color:#315efb}.pass-card h1{margin:12px 0 8px;font-size:28px}.pass-card p{margin:0;color:#667085;line-height:1.6}
+.pass-card label{display:block;margin:20px 0 7px;font-size:13px;color:#667085;font-weight:700}
+#passInput{width:100%;padding:13px 14px;border:1px solid #cbd5e1;border-radius:12px;font-size:16px;outline:none}
+#passInput:focus{border-color:#315efb;box-shadow:0 0 0 3px rgba(49,94,251,.12)}
+#passBtn{width:100%;margin-top:12px;padding:13px 14px;border:0;border-radius:12px;background:#315efb;color:#fff;font-weight:800;font-size:15px;cursor:pointer}
+#passError{min-height:20px;margin-top:10px;font-size:13px;color:#b42318;font-weight:700}
+.pass-note{margin-top:18px;padding-top:14px;border-top:1px solid #edf0f4;color:#98a2b3;font-size:12px}.pass-locked{overflow:hidden}
+
+</style>
+</head>
+<body>
+<div id="passGate" aria-modal="true" role="dialog">
+  <div class="pass-card">
+    <div class="pass-brand">🔐 POWER AI ACCESS</div>
+    <h1>請輸入通關密語</h1>
+    <p>此網站為內部測試工具。知道通關密語的人才能進入 Power AI。</p>
+    <label for="passInput">通關密語</label>
+    <input id="passInput" type="password" autocomplete="off" placeholder="請輸入密語">
+    <button id="passBtn" type="button">進入 Power AI</button>
+    <div id="passError" aria-live="polite"></div>
+    <div class="pass-note">關閉瀏覽器後，下一次會再次要求輸入密語。</div>
+  </div>
+</div>
+
+<header>
+  <div class="brand">POWER AI</div>
+  <div class="sub">Power Design Review Platform · v0.5 + Passphrase</div>
+</header>
+
+<main>
+  <div class="grid">
+    <div class="card feature active" data-module="mlcc">
+      <span class="badge good">可使用</span>
+      <h3 style="margin-top:10px">⚡ MLCC 耐壓檢查</h3>
+      <div class="muted">Allegro EXP → MLCC → Net Voltage → PASS / FAIL。</div>
+    </div>
+    <div class="card feature" data-module="crossref">
+      <span class="badge good">可使用</span>
+      <h3 style="margin-top:10px">🔎 Power IC 替代料</h3>
+      <div class="muted">輸入 IC 型號 → 規格比對 → 相似度 → 替代類型 → 市場行情。</div>
+    </div>
+    <div class="card feature" data-module="review">
+      <span class="badge good">可使用</span>
+      <h3 style="margin-top:10px">🧠 線路 AI Review</h3>
+      <div class="muted">上傳 Allegro EXP + IC Datasheet，可對陌生 Power IC 建立通用檢查規則。</div>
+    </div>
+  </div>
+
+  <div id="mlcc" class="module active">
+    <section class="card section">
+      <h2>MLCC Voltage Checker</h2>
+      <p class="muted">公司規則：MLCC 額定耐壓至少保留 <b>20% Margin</b>。</p>
+      <div class="upload">
+        <div><b>請上傳 Allegro X 23.1 匯出的 .EXP 檔</b></div>
+        <input id="fileInput" type="file" accept=".EXP,.exp,text/plain" />
+        <div class="muted" id="fileStatus">尚未選擇檔案</div>
+      </div>
+    </section>
+
+    <section id="unknownSection" class="card section hidden">
+      <h2>需要使用者補充的 Net</h2>
+      <p class="muted">請輸入無法自動判斷之 Net 的「最高工作電壓」。</p>
+      <div id="unknownNets" class="netgrid"></div>
+      <div class="toolbar"><button class="primary" id="runBtn" type="button">開始檢查</button></div>
+    </section>
+
+    <section id="summarySection" class="hidden">
+      <div class="metricrow">
+        <div class="metric"><span class="muted">MLCC</span><b id="mTotal">0</b></div>
+        <div class="metric"><span class="muted">PASS</span><b id="mPass">0</b></div>
+        <div class="metric"><span class="muted">FAIL</span><b id="mFail">0</b></div>
+        <div class="metric"><span class="muted">需補資料</span><b id="mNeed">0</b></div>
+      </div>
+      <div class="card section">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+          <div><h2 style="margin-bottom:4px">檢查結果</h2><div class="muted">實際跨壓 ≤ Rated Voltage × 80% → PASS。</div></div>
+          <button class="secondary" id="csvBtn" type="button">下載 CSV 報告</button>
+        </div>
+        <div class="tablewrap" style="margin-top:12px">
+          <table>
+            <thead><tr><th>Status</th><th>RefDes</th><th>Value</th><th>MFG</th><th>MPN</th><th>Net 1</th><th>Net 2</th><th>工作跨壓</th><th>Rated</th><th>使用率</th><th>判定</th></tr></thead>
+            <tbody id="resultBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="crossref" class="module">
+    <section class="card section">
+      <h2>Power IC Cross Reference</h2>
+      <p class="muted">目前先以專案常見料號建立測試資料。輸入型號後可查看替代料、價格與官方 Datasheet。</p>
+      <div class="searchrow">
+        <input id="pnInput" type="text" value="SY6969C" placeholder="例如 SY6969C、BQ25710、BQ25720" />
+        <button id="pnSearch" class="primary" type="button">尋找替代料</button>
+      </div>
+      <div class="checks">
+        <span class="checkpill">✓ 規格相似度</span>
+        <span class="checkpill">✓ Package / Pin 評估</span>
+        <span class="checkpill">✓ 生命週期</span>
+        <span class="checkpill">✓ 公開市場價格</span>
+        <span class="checkpill">✓ 官方 Datasheet 連結</span>
+      </div>
+      <div class="note">v0.3 為可操作原型；目前內建已驗證的測試資料。正式上線版會接 Manufacturer / Distributor API，才能搜尋任意料號並取得即時價格與官方文件。</div>
+    </section>
+
+    <section id="sourceCard" class="card section hidden">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:start;flex-wrap:wrap">
+        <div>
+          <span class="badge good">Source IC</span>
+          <h2 id="srcName" style="margin:10px 0 4px"></h2>
+          <div id="srcDesc" class="muted"></div>
+        </div>
+        <div style="text-align:right">
+          <div class="badge info" id="srcStatus"></div>
+          <div style="margin-top:10px"><a id="srcDatasheet" class="dsbtn hidden" target="_blank" rel="noopener">📄 官方 Datasheet</a></div>
+        </div>
+      </div>
+      <div id="specGrid" class="specgrid"></div>
+    </section>
+
+    <section id="candidateSection" class="card section hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <h2 style="margin-bottom:4px">替代料候選</h2>
+          <div class="muted">相似度不是「可直接換料」的保證；Pin / Register / Layout 仍會分開標示。</div>
+        </div>
+        <button id="crossCsv" class="secondary" type="button">下載比較報告</button>
+      </div>
+      <div class="tablewrap" style="margin-top:12px">
+        <table>
+          <thead>
+            <tr><th>排名</th><th>Part Number</th><th>廠牌</th><th>相似度</th><th>分類</th><th>VIN</th><th>Cells</th><th>Charge Current</th><th>Interface</th><th>Package</th><th>公開價格</th><th>Datasheet</th><th>工程結論</th></tr>
+          </thead>
+          <tbody id="candBody"></tbody>
+        </table>
+      </div>
+      <div class="note">價格為原型建立時可查到的授權通路公開價格，實際公司議價 / RFQ 價格可能不同。Datasheet 優先使用 IC 原廠官方連結。</div>
+    </section>
+  </div>
+
+  <div id="review" class="module">
+    <section class="card section">
+      <h2>Circuit AI Review</h2>
+      <p class="muted">操作方式很簡單：先上傳 Allegro EXP，再選 Power IC。若是系統沒看過的 IC，再補上官方 Datasheet PDF，網站會自動讀取 Pin 說明並建立通用檢查規則。</p>
+
+      <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:14px">
+        <div class="upload">
+          <div><b>① 上傳 Allegro X 23.1 .EXP</b></div>
+          <input id="reviewFileInput" type="file" accept=".EXP,.exp,text/plain" />
+          <div class="muted" id="reviewFileStatus">尚未選擇 EXP</div>
+        </div>
+        <div class="upload">
+          <div><b>② 上傳 IC 官方 Datasheet PDF</b></div>
+          <input id="datasheetFileInput" type="file" accept=".pdf,application/pdf" />
+          <div class="muted" id="datasheetFileStatus">陌生 IC 才需要；已建規則的 IC 可略過</div>
+        </div>
+      </div>
+
+      <div id="reviewControls" class="hidden" style="margin-top:14px">
+        <div class="searchrow">
+          <div>
+            <label class="small muted" for="reviewIcSelect">選擇要檢查的 Power IC</label>
+            <select id="reviewIcSelect"></select>
+          </div>
+          <div style="display:flex;align-items:end">
+            <button id="reviewRunBtn" class="primary" type="button" style="width:100%">開始線路檢查</button>
+          </div>
+        </div>
+        <div id="reviewIcInfo" class="notice" style="margin-top:12px"></div>
+        <div id="datasheetAnalysisInfo" class="hidden notice" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <section id="reviewSummary" class="hidden">
+      <div class="metricrow">
+        <div class="metric"><span class="muted">檢查項目</span><b id="rTotal">0</b></div>
+        <div class="metric"><span class="muted">PASS</span><b id="rPass">0</b></div>
+        <div class="metric"><span class="muted">FAIL</span><b id="rFail">0</b></div>
+        <div class="metric"><span class="muted">需 EE Review</span><b id="rReview">0</b></div>
+      </div>
+
+      <div class="card section">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+          <div>
+            <h2 style="margin-bottom:4px">線路檢查結果</h2>
+            <div class="muted">PASS = 符合目前規則；FAIL = 明確不符合；REVIEW = 系統無法安全地下定論，需要工程師確認。</div>
+          </div>
+          <div class="toolbar">
+            <a id="reviewDatasheet" class="dsbtn hidden" target="_blank" rel="noopener">📄 IC Datasheet</a>
+            <button id="reviewCsvBtn" class="secondary" type="button">下載 CSV 報告</button>
+          </div>
+        </div>
+
+        <div class="tablewrap" style="margin-top:12px">
+          <table>
+            <thead>
+              <tr>
+                <th>Status</th><th>檢查項目</th><th>Pin / Net</th><th>系統找到的證據</th><th>工程建議</th>
+              </tr>
+            </thead>
+            <tbody id="reviewBody"></tbody>
+          </table>
+        </div>
+        <div class="note">v0.5：SY6969C/SY20779C 使用專用規則；其他 IC 可由 Datasheet PDF 產生通用 Pin Rule。通用規則無法安全判定時會標示 REVIEW，不會硬判 FAIL。</div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+const mlccState={parts:[],unknown:new Set(),voltages:{},results:[]};
+const reviewState={parts:[],partMap:{},netMap:{},results:[],selected:null,datasheetText:'',datasheetPages:0,datasheetName:'',genericRules:[]};
+
+function parseTSV(line){
+  const out=[];let cur='';let q=false;
+  for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q;}else if(ch==='\t'&&!q){out.push(cur);cur='';}else cur+=ch;}out.push(cur);return out;
+}
+function ratedFrom(...texts){const t=texts.filter(Boolean).join(' ');const m=[...t.matchAll(/(?:^|[_ ,])(\d+(?:\.\d+)?)V(?:[_ ,]|$)/gi)];return m.length?Number(m[m.length-1][1]):null;}
+function inferVoltage(net){
+  if(!net||net==='<null>')return null;const n=net.trim();
+  if(/^(GND|PGND|AGND|DGND)$/i.test(n)||/(^|_)GND($|_)/i.test(n))return 0;
+  let m=n.match(/\+(\d+(?:\.\d+)?)V/i);if(m)return Number(m[1]);
+  m=n.match(/\+V(\d+)P(\d+)/i);if(m)return Number(m[1]+'.'+m[2]);
+  m=n.match(/(?:^|_)(\d+)V(\d+)(?:_|$)/i);if(m)return Number(m[1]+'.'+m[2]);
+  return null;
+}
+function parseEXP(text){
+  const lines=text.split(/\r?\n/).filter(Boolean);const header=parseTSV(lines.find(x=>x.startsWith('"HEADER"'))||'');const idx={};header.forEach((h,i)=>idx[h]=i);
+  const parts=[];let current=null;
+  for(const line of lines){const cols=parseTSV(line),id=cols[0]||'';
+    if(id.startsWith('PARTINST:')){if(current)parts.push(current);current={ref:cols[idx['Part Reference']]||'',value:cols[idx['Value']]||'',bom:cols[idx['BOM']]||'',desc:cols[idx['Description']]||'',mfg:cols[idx['Mfg']]||'',mpn:cols[idx['Mfg Part Number']]||'',type:cols[idx['Part Type']]||'',pins:[]};}
+    else if(id.startsWith('PININST:')&&current){current.pins.push({ref:cols[idx['Part Reference']]||'',net:cols[idx['Net Name']]||'',pin:cols[idx['Number']]||''});}
+  }
+  if(current)parts.push(current);
+  return parts.filter(p=>{const ceramic=/Capacitor\\Ceramic/i.test(p.type)||(/^CAP,/i.test(p.desc)&&/X5R|X7R|NPO|C0G/i.test(p.value+' '+p.desc));return ceramic&&ratedFrom(p.value,p.desc)!==null&&p.bom.toUpperCase()!=='NI';})
+  .map(p=>({...p,rated:ratedFrom(p.value,p.desc),nets:[...new Set(p.pins.map(x=>x.net).filter(x=>x&&x!=='<null>'))].slice(0,2)}));
+}
+function renderUnknown(){
+  const box=document.getElementById('unknownNets');box.innerHTML='';
+  [...mlccState.unknown].sort().forEach(net=>{const div=document.createElement('div');div.className='netitem';div.innerHTML=`<label>${esc(net)} · 最高工作電壓 (V)</label><input data-net="${escAttr(net)}" type="number" min="0" step="0.01" placeholder="例如 6.3" />`;box.appendChild(div);});
+  if(!mlccState.unknown.size)box.innerHTML='<div class="notice">沒有需要補充的 Net，可直接開始檢查。</div>';
+  document.getElementById('unknownSection').classList.remove('hidden');
+}
+function calcResults(){
+  const volts={};document.querySelectorAll('#unknownNets input[data-net]').forEach(i=>{if(i.value!=='')volts[i.dataset.net]=Number(i.value);});
+  mlccState.results=mlccState.parts.map(p=>{const n1=p.nets[0]||'',n2=p.nets[1]||'GND';const v1=inferVoltage(n1)??volts[n1],v2=inferVoltage(n2)??volts[n2];let stress=null,status='NEED INPUT',reason='缺少 Net 工作電壓';if(Number.isFinite(v1)&&Number.isFinite(v2)){stress=Math.abs(v1-v2);status=stress<=p.rated*.8?'PASS':'FAIL';reason=status==='PASS'?'符合 20% Margin':'不符合 20% Margin';}return {...p,n1,n2,v1,v2,stress,usage:stress===null?null:stress/p.rated*100,status,reason};});
+  renderResults();
+}
+function renderResults(){
+  const body=document.getElementById('resultBody');body.innerHTML='';let pass=0,fail=0,need=0;
+  mlccState.results.forEach(r=>{if(r.status==='PASS')pass++;else if(r.status==='FAIL')fail++;else need++;const b=r.status==='PASS'?'good':r.status==='FAIL'?'bad':'warn';const tr=document.createElement('tr');tr.innerHTML=`<td><span class="badge ${b}">${r.status}</span></td><td><b>${esc(r.ref)}</b></td><td>${esc(r.value)}</td><td>${esc(r.mfg)}</td><td>${esc(r.mpn)}</td><td>${esc(r.n1)}${Number.isFinite(r.v1)?` (${r.v1}V)`:''}</td><td>${esc(r.n2)}${Number.isFinite(r.v2)?` (${r.v2}V)`:''}</td><td>${r.stress===null?'—':r.stress.toFixed(2)+' V'}</td><td>${r.rated} V</td><td>${r.usage===null?'—':r.usage.toFixed(1)+'%'}</td><td>${r.reason}</td>`;body.appendChild(tr);});
+  mTotal.textContent=mlccState.results.length;mPass.textContent=pass;mFail.textContent=fail;mNeed.textContent=need;summarySection.classList.remove('hidden');
+}
+function exportMlcc(){
+  const rows=[['Status','RefDes','Value','MFG','MPN','Net1','Net1_V','Net2','Net2_V','Stress_V','Rated_V','Usage_%','Result']];
+  mlccState.results.forEach(r=>rows.push([r.status,r.ref,r.value,r.mfg,r.mpn,r.n1,r.v1??'',r.n2,r.v2??'',r.stress??'',r.rated,r.usage?.toFixed(1)??'',r.reason]));downloadCsv('MLCC_Voltage_Check_Report.csv',rows);
+}
+
+const db={
+  SY6969C:{
+    name:'SY6969C / SY20779CQFQ',mfr:'Silergy',status:'Production',datasheet:'https://us1.silergy.com/download/downloadFile?ftype=note&id=5305&type=product',
+    desc:'Multi-Cell Synchronous Buck-Boost Battery Charger Controller with NVDC Power Path Management',
+    vin:'3.5–25 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'QFN 4×4-32',topology:'Buck-Boost',
+    candidates:[
+      {pn:'BQ25710RSNR',mfr:'Texas Instruments',datasheet:'https://www.ti.com/lit/ds/symlink/bq25710.pdf',score:97,type:'高相似 / P2P 候選',vin:'3.5–24 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'WQFN 4×4-32',price:'NT$150 @1 / NT$89.2 @500',stock:'1,833–2,335',result:'最優先驗證；Pin / FW register 仍需正式比對'},
+      {pn:'BQ25720RSNR',mfr:'Texas Instruments',datasheet:'https://www.ti.com/lit/ds/symlink/bq25720.pdf',score:94,type:'P2P 系列候選',vin:'3.5–26 V',cells:'1–4',current:'16.2 A',iface:'SMBus',pkg:'WQFN 4×4-32',price:'NT$150.57 @1 / NT$86.76 @1k',stock:'約 2,600',result:'功能更強；與 BQ25710 P2P，但需確認 FW 差異'},
+      {pn:'MP2760GVT',mfr:'Monolithic Power Systems',datasheet:'https://www.monolithicpower.com/en/products/battery-management/chargers/3-series-cell-chargers/mp2760.html',score:78,type:'Functional Equivalent',vin:'4–22 V',cells:'1–4',current:'6 A',iface:'I²C / SMBus',pkg:'TQFN 4×5-30',price:'NT$154–158 @1 / NT$89.17 @1k',stock:'依版本約 45–627',result:'功能相近，但 Package / Pin 不同，需要改板'},
+      {pn:'RT9478M',mfr:'Richtek',datasheet:'https://www.richtek.com/assets/product_file/RT9478M/RT9478M_DS-01.pdf',score:74,type:'Functional Equivalent',vin:'最高 24 V 類別',cells:'2–4',current:'—',iface:'SMBus',pkg:'不同系列',price:'需詢價',stock:'需查詢',result:'功能方向相近；非直接替換，需完整設計比對'},
+      {pn:'RT9490',mfr:'Richtek',datasheet:'https://www.richtek.com/assets/product_file/RT9490/RT9490_DS-02.pdf',score:69,type:'Similar Device',vin:'Buck-Boost Charger',cells:'2–4',current:'5 A',iface:'—',pkg:'WL-CSP 系列',price:'需查詢',stock:'官方頁顯示 DigiKey 有貨',result:'用途相近但架構與封裝差異較大'}
+    ]
+  },
+  SY20779C:null,
+  BQ25710:{
+    name:'BQ25710',mfr:'Texas Instruments',status:'Active',datasheet:'https://www.ti.com/lit/ds/symlink/bq25710.pdf',
+    desc:'SMBus 1–4 cell NVDC Buck-Boost Battery Charge Controller',
+    vin:'3.5–24 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'WQFN 4×4-32',topology:'Buck-Boost',
+    candidates:[
+      {pn:'SY20779CQFQ / SY6969C',mfr:'Silergy',datasheet:'https://us1.silergy.com/download/downloadFile?ftype=note&id=5305&type=product',score:97,type:'高相似 / P2P 候選',vin:'3.5–25 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'QFN 4×4-32',price:'需詢價',stock:'Production',result:'高度相近；建議正式核對 register / timing 後替換'},
+      {pn:'BQ25720RSNR',mfr:'Texas Instruments',datasheet:'https://www.ti.com/lit/ds/symlink/bq25720.pdf',score:96,type:'Pin-to-Pin',vin:'3.5–26 V',cells:'1–4',current:'16.2 A',iface:'SMBus',pkg:'WQFN 4×4-32',price:'NT$150.57 @1 / NT$86.76 @1k',stock:'約 2,600',result:'TI 官方確認 P2P；仍需確認韌體設定差異'},
+      {pn:'MP2760GVT',mfr:'Monolithic Power Systems',datasheet:'https://www.monolithicpower.com/en/products/battery-management/chargers/3-series-cell-chargers/mp2760.html',score:78,type:'Functional Equivalent',vin:'4–22 V',cells:'1–4',current:'6 A',iface:'I²C / SMBus',pkg:'TQFN 4×5-30',price:'NT$154–158 @1 / NT$89.17 @1k',stock:'依版本約 45–627',result:'需改板'}
+    ]
+  },
+  BQ25720:{
+    name:'BQ25720',mfr:'Texas Instruments',status:'Active',datasheet:'https://www.ti.com/lit/ds/symlink/bq25720.pdf',
+    desc:'SMBus 1–4 cell NVDC Buck-Boost Battery Charge Controller with USB-C PD OTG',
+    vin:'3.5–26 V',cells:'1–4',current:'16.2 A',iface:'SMBus',pkg:'WQFN 4×4-32',topology:'Buck-Boost',
+    candidates:[
+      {pn:'BQ25710RSNR',mfr:'Texas Instruments',datasheet:'https://www.ti.com/lit/ds/symlink/bq25710.pdf',score:94,type:'Pin-to-Pin family',vin:'3.5–24 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'WQFN 4×4-32',price:'NT$150 @1 / NT$89.2 @500',stock:'1,833–2,335',result:'P2P family，但電流能力與功能較低'},
+      {pn:'SY20779CQFQ / SY6969C',mfr:'Silergy',datasheet:'https://us1.silergy.com/download/downloadFile?ftype=note&id=5305&type=product',score:91,type:'高相似候選',vin:'3.5–25 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'QFN 4×4-32',price:'需詢價',stock:'Production',result:'高度相似，但能力低於 BQ25720；需完整驗證'}
+    ]
+  },
+  MP2760:{
+    name:'MP2760',mfr:'Monolithic Power Systems',status:'Active (部分 suffix 例外)',datasheet:'https://www.monolithicpower.com/en/products/battery-management/chargers/3-series-cell-chargers/mp2760.html',
+    desc:'1-Cell to 4-Cell Buck-Boost Charger with NVDC Power Path Management',
+    vin:'4–22 V',cells:'1–4',current:'6 A',iface:'I²C / SMBus',pkg:'TQFN 4×5-30',topology:'Buck-Boost',
+    candidates:[
+      {pn:'BQ25710RSNR',mfr:'Texas Instruments',datasheet:'https://www.ti.com/lit/ds/symlink/bq25710.pdf',score:78,type:'Functional Equivalent',vin:'3.5–24 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'WQFN 4×4-32',price:'NT$150 @1',stock:'1,833–2,335',result:'功能相近，但不可直接替換'},
+      {pn:'SY20779CQFQ / SY6969C',mfr:'Silergy',datasheet:'https://us1.silergy.com/download/downloadFile?ftype=note&id=5305&type=product',score:77,type:'Functional Equivalent',vin:'3.5–25 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'QFN 4×4-32',price:'需詢價',stock:'Production',result:'功能相近，但不可直接替換'}
+    ]
+  }
+};
+db.SY20779C=db.SY6969C;
+
+function normalizePn(v){let x=v.trim().toUpperCase().replace(/\s+/g,'');if(x.startsWith('SY6969'))return'SY6969C';if(x.startsWith('SY20779'))return'SY20779C';if(x.startsWith('BQ25710'))return'BQ25710';if(x.startsWith('BQ25720'))return'BQ25720';if(x.startsWith('MP2760'))return'MP2760';return x;}
+function runCross(){
+  const key=normalizePn(pnInput.value),src=db[key];
+  if(!src){sourceCard.classList.remove('hidden');candidateSection.classList.add('hidden');srcName.textContent=pnInput.value||'未輸入';srcDesc.textContent='v0.2 的本機資料庫還沒有這顆料。正式上線版會改成連線查詢官方 Datasheet / Distributor API。';srcStatus.textContent='尚未建檔';srcDatasheet.classList.add('hidden');srcDatasheet.removeAttribute('href');specGrid.innerHTML='';return;}
+  srcName.textContent=src.name;srcDesc.textContent=src.desc;srcStatus.textContent=src.mfr+' · '+src.status;if(src.datasheet){srcDatasheet.href=src.datasheet;srcDatasheet.classList.remove('hidden');}else{srcDatasheet.classList.add('hidden');srcDatasheet.removeAttribute('href');}
+  const specs=[['Topology',src.topology],['VIN',src.vin],['Battery Cells',src.cells],['Charge Current',src.current],['Interface',src.iface],['Package',src.pkg]];
+  specGrid.innerHTML=specs.map(([k,v])=>`<div class="speccell"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+  sourceCard.classList.remove('hidden');
+  candBody.innerHTML='';
+  src.candidates.sort((a,b)=>b.score-a.score).forEach((c,i)=>{const tr=document.createElement('tr');if(i===0)tr.className='rank1';const t=c.type.includes('Pin')||c.type.includes('P2P')?'good':c.type.includes('Functional')?'warn':'info';tr.innerHTML=`<td>${i+1}</td><td><b>${c.pn}</b></td><td>${c.mfr}</td><td><span class="score">${c.score}%</span></td><td><span class="badge ${t}">${c.type}</span></td><td>${c.vin}</td><td>${c.cells}</td><td>${c.current}</td><td>${c.iface}</td><td>${c.pkg}</td><td>${c.price}</td><td>${c.datasheet?`<a class="dsbtn" href="${c.datasheet}" target="_blank" rel="noopener">📄 開啟</a>`:'—'}</td><td>${c.result}</td>`;candBody.appendChild(tr);});
+  candidateSection.classList.remove('hidden');
+}
+function exportCross(){
+  const key=normalizePn(pnInput.value),src=db[key];if(!src)return;
+  const rows=[['Source IC',src.name],[],['Rank','Part Number','Manufacturer','Similarity %','Type','VIN','Cells','Charge Current','Interface','Package','Public Price','Datasheet URL','Engineering Result']];
+  src.candidates.sort((a,b)=>b.score-a.score).forEach((c,i)=>rows.push([i+1,c.pn,c.mfr,c.score,c.type,c.vin,c.cells,c.current,c.iface,c.pkg,c.price,c.datasheet||'',c.result]));
+  downloadCsv('Power_IC_Cross_Reference_'+key+'.csv',rows);
+}
+function downloadCsv(name,rows){const csv='\ufeff'+rows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href);}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}function escAttr(s){return esc(s);}
+
+
+function parseAllEXP(text){
+  const lines=text.split(/\r?\n/).filter(Boolean);
+  const hline=lines.find(x=>x.startsWith('"HEADER"'));
+  if(!hline) throw new Error('找不到 EXP HEADER');
+  const header=parseTSV(hline);
+  const idx={}; header.forEach((h,i)=>idx[h]=i);
+  const parts=[]; let current=null;
+
+  for(const line of lines){
+    const cols=parseTSV(line); const id=cols[0]||'';
+    if(id.startsWith('PARTINST:')){
+      if(current) parts.push(current);
+      current={
+        ref:cols[idx['Part Reference']]||'',
+        value:cols[idx['Value']]||'',
+        bom:cols[idx['BOM']]||'',
+        datasheet:cols[idx['Datasheet']]||'',
+        desc:cols[idx['Description']]||'',
+        mfg:cols[idx['Mfg']]||'',
+        mpn:cols[idx['Mfg Part Number']]||'',
+        type:cols[idx['Part Type']]||'',
+        pins:[]
+      };
+    }else if(id.startsWith('PININST:') && current){
+      const raw=cols[1]||'';
+      const name=raw.includes(':')?raw.substring(raw.indexOf(':')+1):raw;
+      current.pins.push({
+        name:name,
+        net:cols[idx['Net Name']]||'',
+        num:cols[idx['Number']]||'',
+        electrical:cols[idx['Type']]||''
+      });
+    }
+  }
+  if(current) parts.push(current);
+  return parts;
+}
+
+function buildReviewGraph(parts){
+  reviewState.partMap={}; reviewState.netMap={};
+  parts.forEach(p=>{
+    reviewState.partMap[p.ref]=p;
+    p.pins.forEach(pin=>{
+      if(!pin.net) return;
+      if(!reviewState.netMap[pin.net]) reviewState.netMap[pin.net]=[];
+      reviewState.netMap[pin.net].push({part:p,pin});
+    });
+  });
+}
+
+function installed(p){ return (p.bom||'').toUpperCase()!=='NI'; }
+function pinOf(p,name){ return p.pins.find(x=>x.name.toUpperCase()===name.toUpperCase()); }
+function isGround(net){ return /^(GND|PGND|AGND|DGND)$/i.test(net||'') || /(^|_)GND($|_)/i.test(net||''); }
+function otherNet(p,net){
+  const ns=[...new Set(p.pins.map(x=>x.net).filter(Boolean))];
+  if(ns.length!==2) return null;
+  return ns[0]===net?ns[1]:ns[1]===net?ns[0]:null;
+}
+function isResistor(p){ return /Resistor/i.test(p.type||''); }
+function isCap(p){ return /Capacitor/i.test(p.type||''); }
+function isInductor(p){ return /Inductor/i.test(p.type||''); }
+function isMosfet(p){ return /Transistor/i.test(p.type||'') || /MOSFET/i.test((p.desc||'')+' '+(p.value||'')); }
+function isLowOhm(p){ return /^\s*\d+(?:\.\d+)?m(?:_|$)/i.test(p.value||''); }
+
+function componentsOn(net){
+  return (reviewState.netMap[net]||[]).map(x=>x.part).filter((p,i,a)=>a.indexOf(p)===i);
+}
+function directPartBetween(netA,netB,predicate){
+  for(const p of reviewState.parts){
+    if(!installed(p) || !predicate(p)) continue;
+    const ns=[...new Set(p.pins.map(x=>x.net).filter(Boolean))];
+    if(ns.includes(netA)&&ns.includes(netB)) return p;
+  }
+  return null;
+}
+function reachableByResistors(startNet,maxDepth=2,excludeLowOhm=false){
+  const seen=new Set([startNet]); let front=[startNet];
+  for(let d=0;d<maxDepth;d++){
+    const next=[];
+    front.forEach(net=>{
+      (reviewState.netMap[net]||[]).forEach(({part})=>{
+        if(!installed(part)||!isResistor(part)) return;
+        if(excludeLowOhm && isLowOhm(part)) return;
+        const n2=otherNet(part,net); if(!n2||seen.has(n2)) return;
+        seen.add(n2); next.push(n2);
+      });
+    });
+    front=next;
+  }
+  return seen;
+}
+function findCapToGround(net,maxResDepth=0){
+  const nets=maxResDepth?reachableByResistors(net,maxResDepth):new Set([net]);
+  for(const n of nets){
+    for(const p of componentsOn(n)){
+      if(!installed(p)||!isCap(p)) continue;
+      const n2=otherNet(p,n);
+      if(n2 && isGround(n2)) return p;
+    }
+  }
+  return null;
+}
+function findBootstrap(btstNet,swNet){
+  const nets=reachableByResistors(btstNet,1);
+  for(const n of nets){
+    const p=directPartBetween(n,swNet,isCap);
+    if(p) return p;
+  }
+  return null;
+}
+function findGatePath(driverNet){
+  const nets=reachableByResistors(driverNet,2);
+  for(const n of nets){
+    for(const item of (reviewState.netMap[n]||[])){
+      if(!installed(item.part)||!isMosfet(item.part)) continue;
+      if(/^G/i.test(item.pin.name||'')) return {part:item.part,pin:item.pin,net:n};
+    }
+  }
+  return null;
+}
+function findShuntBetweenSense(pinNetA,pinNetB){
+  const a=reachableByResistors(pinNetA,3,true);
+  const b=reachableByResistors(pinNetB,3,true);
+  for(const p of reviewState.parts){
+    if(!installed(p)||!isResistor(p)||!isLowOhm(p)) continue;
+    const ns=[...new Set(p.pins.map(x=>x.net).filter(Boolean))];
+    if(ns.length!==2) continue;
+    if((a.has(ns[0])&&b.has(ns[1]))||(a.has(ns[1])&&b.has(ns[0]))) return p;
+  }
+  return null;
+}
+function externalBusPath(pinNet,pattern){
+  const nets=reachableByResistors(pinNet,3);
+  for(const n of nets) if(pattern.test(n)) return n;
+  return null;
+}
+function result(status,check,pinNet,evidence,advice){
+  return {status,check,pinNet,evidence,advice};
+}
+function sy6969Review(ic){
+  const out=[];
+  const pnet=n=>pinOf(ic,n)?.net||'';
+
+  [['PGND','Power Ground'],['THERMAL PAD','Thermal Pad']].forEach(([pn,label])=>{
+    const net=pnet(pn);
+    out.push(isGround(net)?
+      result('PASS',label,`${pn} → ${net}`,'已直接連接 GND','無需處理') :
+      result('FAIL',label,`${pn} → ${net||'未連接'}`,'未偵測到 GND 連線','請依 Datasheet 確認並接回正確 GND'));
+  });
+
+  [['VBUS','VBUS Local Decoupling'],['VDDX','VDDX Local Decoupling'],['REGN','REGN Local Decoupling']].forEach(([pn,label])=>{
+    const net=pnet(pn), cap=findCapToGround(net,0);
+    out.push(cap?
+      result('PASS',label,`${pn} → ${net}`,`${cap.ref} (${cap.value}) 連接 ${net} ↔ GND`,'無需處理') :
+      result('FAIL',label,`${pn} → ${net||'未連接'}`,'未找到直接對 GND 的實裝電容','確認是否缺少 IC 建議的 local decoupling capacitor'));
+  });
+
+  const sw1=pnet('SW1'), sw2=pnet('SW2');
+  const ind=directPartBetween(sw1,sw2,isInductor);
+  out.push(ind?
+    result('PASS','Buck-Boost 主電感',`SW1 ${sw1} ↔ SW2 ${sw2}`,`${ind.ref} (${ind.value}) 直接跨接兩個 Phase Node`,'符合單電感 4-switch Buck-Boost 結構') :
+    result('FAIL','Buck-Boost 主電感',`SW1 ${sw1} ↔ SW2 ${sw2}`,'兩個 SW Node 之間未找到實裝電感','檢查主電感是否缺漏或 Net 連接錯誤'));
+
+  [['BTST1','SW1'],['BTST2','SW2']].forEach(([b,s])=>{
+    const cap=findBootstrap(pnet(b),pnet(s));
+    out.push(cap?
+      result('PASS',`${b} Bootstrap`,`${b} ${pnet(b)} ↔ ${s} ${pnet(s)}`,`${cap.ref} (${cap.value}) 已形成 Bootstrap capacitor path`,'無需處理') :
+      result('FAIL',`${b} Bootstrap`,`${b} ${pnet(b)} ↔ ${s} ${pnet(s)}`,'找不到 Bootstrap capacitor path','確認 Bootstrap capacitor 是否接在 BTST 與對應 SW Node 之間'));
+  });
+
+  [['HIDRV1','High-side Gate 1'],['LODRV1','Low-side Gate 1'],['HIDRV2','High-side Gate 2'],['LODRV2','Low-side Gate 2']].forEach(([pn,label])=>{
+    const g=findGatePath(pnet(pn));
+    out.push(g?
+      result('PASS',label,`${pn} → ${pnet(pn)}`,`經驅動電阻連到 ${g.part.ref}.${g.pin.name} (${g.net})`,'Gate drive path 已建立') :
+      result('FAIL',label,`${pn} → ${pnet(pn)||'未連接'}`,'未找到 MOSFET Gate path','檢查 Gate resistor / MOSFET gate 接線'));
+  });
+
+  const acShunt=findShuntBetweenSense(pnet('ACN'),pnet('ACP'));
+  out.push(acShunt?
+    result('PASS','Adapter Current Sense',`ACN ${pnet('ACN')} / ACP ${pnet('ACP')}`,`${acShunt.ref} (${acShunt.value}) 被辨識為差動取樣 Shunt`,'無需處理') :
+    result('FAIL','Adapter Current Sense',`ACN ${pnet('ACN')} / ACP ${pnet('ACP')}`,'未找到兩個 Sense Pin 對應的低阻 Shunt','確認 ACN / ACP 是否跨接正確的 Adapter current-sense resistor'));
+
+  const batShunt=findShuntBetweenSense(pnet('SRP'),pnet('SRN'));
+  out.push(batShunt?
+    result('PASS','Battery Current Sense',`SRP ${pnet('SRP')} / SRN ${pnet('SRN')}`,`${batShunt.ref} (${batShunt.value}) 被辨識為 Battery Shunt`,'無需處理') :
+    result('FAIL','Battery Current Sense',`SRP ${pnet('SRP')} / SRN ${pnet('SRN')}`,'未找到兩個 Sense Pin 對應的低阻 Shunt','確認 SRP / SRN 是否跨接正確的 Battery current-sense resistor'));
+
+  const batGate=findGatePath(pnet('BATDRV#'));
+  out.push(batGate?
+    result('PASS','BATDRV# → Battery FET',`BATDRV# → ${pnet('BATDRV#')}`,`已連到 ${batGate.part.ref}.${batGate.pin.name} (${batGate.net})`,'Battery FET gate path 已建立') :
+    result('FAIL','BATDRV# → Battery FET',`BATDRV# → ${pnet('BATDRV#')}`,'找不到 Battery MOSFET Gate path','確認 BATDRV# 與 BATFET Gate 接線'));
+
+  const sda=externalBusPath(pnet('SDA'),/SDA|I2C/i);
+  const scl=externalBusPath(pnet('SCL'),/SCL|I2C/i);
+  out.push(sda?
+    result('PASS','SMBus SDA',`SDA → ${pnet('SDA')}`,`可經串聯電阻追蹤至 ${sda}`,'SDA 並非浮接') :
+    result('REVIEW','SMBus SDA',`SDA → ${pnet('SDA')||'未連接'}`,'未能追蹤到外部 I²C/SMBus Net','請確認 SDA 是否有接至 EC / Host'));
+  out.push(scl?
+    result('PASS','SMBus SCL',`SCL → ${pnet('SCL')}`,`可經串聯電阻追蹤至 ${scl}`,'SCL 並非浮接') :
+    result('REVIEW','SMBus SCL',`SCL → ${pnet('SCL')||'未連接'}`,'未能追蹤到外部 I²C/SMBus Net','請確認 SCL 是否有接至 EC / Host'));
+
+  const cmp=pinOf(ic,'CMPOUT');
+  if(cmp && !cmp.net){
+    out.push(result('REVIEW','CMPOUT 未連接','CMPOUT Pin 15','EXP 顯示此 Pin 無 Net','此輸出是否可 NC 需依實際功能需求與 Datasheet 確認；系統不直接判 FAIL'));
+  }
+
+  ['NC1','NC2'].forEach(pn=>{
+    const pin=pinOf(ic,pn);
+    if(pin && pin.net){
+      out.push(result('REVIEW',`${pn} Symbol / Net 一致性`,`${pn} → ${pin.net}`,`Symbol 名稱為 ${pn}，但線路有外接元件`,'確認目前使用的 Symbol pin name 是否與最新版 Datasheet 一致；若實際為 COMP pin，建議更新 Symbol 命名避免誤判'));
+    }
+  });
+
+  return out;
+}
+function basicUnsupportedReview(ic){
+  const out=[];
+  const unconnected=ic.pins.filter(p=>!p.net && !/NC/i.test(p.name||''));
+  if(unconnected.length){
+    unconnected.forEach(p=>out.push(result('REVIEW','未連接 Pin',`${p.name} Pin ${p.num}`, 'EXP 顯示無 Net','此 IC 尚未建立專用 Datasheet 規則，請人工確認此 Pin 是否允許 NC')));
+  }else{
+    out.push(result('PASS','基本連線掃描',ic.ref,'未發現明顯的非 NC 浮接 Pin','此 IC 尚未建立專用規則，仍需人工 Datasheet Review'));
+  }
+  out.push(result('REVIEW','專用規則庫',`${ic.mfg} ${ic.mpn||ic.value}`,'目前尚未使用 Datasheet 建立此 IC 的完整 Pin Rule','將此 IC 加入 Rule Library 後才能進行精準自動檢查'));
+  return out;
+}
+function powerIcCandidates(parts){
+  return parts.filter(p=>{
+    const t=(p.type||'')+' '+(p.desc||'')+' '+(p.value||'')+' '+(p.mpn||'');
+    return installed(p) && (/Integrated Circuit/i.test(p.type||'') || /charger|buck|boost|regulator|PMIC|power controller/i.test(t));
+  });
+}
+function updateReviewIcInfo(){
+  const ref=reviewIcSelect.value, ic=reviewState.partMap[ref];
+  if(!ic) return;
+  reviewState.selected=ic;
+  const supported=/SY6969|SY20779/i.test((ic.mpn||'')+' '+(ic.value||''));
+  reviewIcInfo.innerHTML=`<b>${esc(ic.ref)} · ${esc(ic.mfg)} ${esc(ic.mpn||ic.value)}</b><br>${esc(ic.desc)}<br><span class="small">${supported?'✅ 已有 SY6969C/SY20779C 專用規則庫':'📄 此 IC 可使用 Datasheet PDF 自動建立通用規則'}</span>`;
+  if(ic.datasheet){
+    reviewDatasheet.href=ic.datasheet;
+    reviewDatasheet.classList.remove('hidden');
+  }else{
+    reviewDatasheet.classList.add('hidden');
+    reviewDatasheet.removeAttribute('href');
+  }
+}
+function runCircuitReview(){
+  const ic=reviewState.partMap[reviewIcSelect.value];
+  if(!ic) return;
+  reviewState.selected=ic;
+  const builtIn=/SY6969|SY20779/i.test((ic.mpn||'')+' '+(ic.value||''));
+  if(builtIn){
+    reviewState.results=sy6969Review(ic);
+    datasheetAnalysisInfo.classList.add('hidden');
+  }else{
+    if(!reviewState.datasheetText){
+      reviewState.results=[
+        result('REVIEW','需要 Datasheet',`${ic.ref} · ${ic.mpn||ic.value}`,'這顆 IC 尚無內建專用規則，且尚未上傳 Datasheet PDF','請在上方第②格上傳此 IC 的官方 Datasheet PDF，再重新按「開始線路檢查」')
+      ];
+      renderCircuitReview();
+      return;
+    }
+    reviewState.genericRules=generateGenericRules(ic,reviewState.datasheetText);
+    reviewState.results=genericDatasheetReview(ic,reviewState.datasheetText,reviewState.genericRules);
+    datasheetAnalysisInfo.innerHTML=`<b>Datasheet 已解析：</b>${esc(reviewState.datasheetName)} · ${reviewState.datasheetPages} 頁 · 產生 ${reviewState.genericRules.length} 條 Pin Rule<div class="rulelist">${[...new Set(reviewState.genericRules.map(r=>r.category))].map(x=>`<span class="rulechip">${esc(x)}</span>`).join('')}</div>`;
+    datasheetAnalysisInfo.classList.remove('hidden');
+  }
+  renderCircuitReview();
+}
+
+function cleanPinName(name){
+  return String(name||'').toUpperCase().replace(/\s+/g,'').replace(/[^A-Z0-9_#\/+\-]/g,'');
+}
+function pinCategory(name, evidence=''){
+  const n=cleanPinName(name), e=String(evidence||'').toUpperCase();
+  if(/^(NC|N\/C|DNC)/.test(n)) return 'NC';
+  if(/THERMAL|EXPOSED|EPAD|POWERPAD|PAD/.test(n)) return 'GROUND';
+  if(/(^|_)(PGND|AGND|DGND|SGND|GND)(_|$)/.test(n) || n==='GND') return 'GROUND';
+  if(/^(VIN|VBUS|VCC|VDD|AVDD|PVDD|VBIAS|BIAS|REGN|LDO|VREG)/.test(n)) return 'SUPPLY';
+  if(/BOOT|BST|BTST/.test(n)) return 'BOOTSTRAP';
+  if(/^(SW|LX|PHASE|PH|SWITCH)/.test(n)) return 'SWITCH';
+  if(/HIDRV|LODRV|HGATE|LGATE|DRVH|DRVL|GATE|BGATE|BATDRV/.test(n)) return 'GATE_DRIVE';
+  if(/^(FB|VFB|VSENSE|VSNS|SENSEV|VOUT_SENSE)/.test(n)) return 'FEEDBACK';
+  if(/SDA|SCL|SMB|I2C/.test(n)) return 'DIGITAL_BUS';
+  if(/EN|ENABLE|CE#?$|HIZ/.test(n)) return 'ENABLE';
+  if(/PGOOD|POWERGOOD|ACOK|CHG_OK|CHGOK|PROCHOT|ALERT|INT#?$/.test(n)) return /OPEN.?DRAIN/.test(e)?'OPEN_DRAIN':'STATUS';
+  if(/COMP|ITH|EAOUT/.test(n)) return 'COMPENSATION';
+  if(/CSP|CSN|ACN|ACP|SRP|SRN|ISEN|ISNS|SENSE\+|SENSE\-|CS\+|CS\-/.test(n)) return 'CURRENT_SENSE';
+  if(/NTC|TS|THERM/.test(n)) return 'THERMAL_SENSE';
+  if(/RESET|RST|MODE|SEL|ADDR|GPIO/.test(n)) return 'CONTROL';
+  return 'GENERAL';
+}
+function datasheetSnippet(text,pinName){
+  const raw=String(text||''), upper=raw.toUpperCase(), pn=cleanPinName(pinName);
+  const candidates=[pn,pn.replace(/#$/,''),pn.replace(/\//g,' '),pn.replace(/_/g,' ')]
+    .filter(x=>x.length>=2);
+  let pos=-1;
+  for(const c of candidates){ pos=upper.indexOf(c); if(pos>=0) break; }
+  if(pos<0) return '';
+  const start=Math.max(0,pos-160), end=Math.min(raw.length,pos+420);
+  return raw.slice(start,end).replace(/\s+/g,' ').trim();
+}
+function generateGenericRules(ic,text){
+  return ic.pins.map(pin=>{
+    const evidence=datasheetSnippet(text,pin.name);
+    return {
+      pin:pin.name,
+      num:pin.num,
+      net:pin.net,
+      category:pinCategory(pin.name,evidence),
+      evidence
+    };
+  });
+}
+function anyGroundCap(net){
+  if(!net) return null;
+  const direct=findCapToGround(net,0);
+  if(direct) return direct;
+  return findCapToGround(net,1);
+}
+function hasResistorNetwork(net){
+  if(!net) return false;
+  return (reviewState.netMap[net]||[]).some(x=>installed(x.part)&&isResistor(x.part));
+}
+function hasRcNetwork(net){
+  if(!net) return false;
+  const comps=componentsOn(net).filter(installed);
+  return comps.some(isResistor) && comps.some(isCap);
+}
+function findPullup(net){
+  if(!net) return null;
+  for(const p of componentsOn(net)){
+    if(!installed(p)||!isResistor(p)) continue;
+    const n2=otherNet(p,net); if(!n2) continue;
+    const v=inferVoltage(n2);
+    if((Number.isFinite(v)&&v>0) || /^\+|VCC|VDD|REGN|LDO/i.test(n2)) return {part:p,rail:n2};
+  }
+  return null;
+}
+function pairedSwitchForBoot(pinName,ic){
+  const n=cleanPinName(pinName);
+  const digit=(n.match(/(\d+)$/)||[])[1];
+  if(digit){
+    const p=ic.pins.find(x=>new RegExp(`^(SW|LX|PHASE)${digit}$`,'i').test(cleanPinName(x.name)));
+    if(p) return p;
+  }
+  return ic.pins.find(x=>/^(SW|LX|PHASE)/i.test(cleanPinName(x.name)))||null;
+}
+function hasSwitchPath(net){
+  if(!net) return null;
+  for(const p of componentsOn(net)){
+    if(!installed(p)) continue;
+    if(isInductor(p)||isMosfet(p)) return p;
+  }
+  return null;
+}
+function hasGatePath(net){
+  return findGatePath(net);
+}
+function findSensePeer(rule,rules){
+  const same=rules.filter(r=>r!==rule && r.category==='CURRENT_SENSE');
+  if(!same.length) return null;
+  const n=cleanPinName(rule.pin);
+  const swaps=[
+    ['P','N'],['N','P'],['+','-'],['-','+']
+  ];
+  for(const [a,b] of swaps){
+    if(n.endsWith(a)){
+      const base=n.slice(0,-a.length);
+      const peer=same.find(r=>cleanPinName(r.pin)===base+b);
+      if(peer) return peer;
+    }
+  }
+  return same[0];
+}
+function likelyPartMatch(ic,text){
+  const upper=String(text||'').toUpperCase().replace(/[\s\-]/g,'');
+  const vals=[ic.mpn,ic.value].filter(Boolean).map(x=>String(x).toUpperCase().replace(/[\s\-]/g,''));
+  for(const v0 of vals){
+    const variants=[v0];
+    const m=v0.match(/^([A-Z]{1,8}\d{3,8}[A-Z]?)/);
+    if(m) variants.push(m[1]);
+    if(variants.some(v=>v.length>=5 && upper.includes(v))) return true;
+  }
+  return false;
+}
+function genericDatasheetReview(ic,text,rules){
+  const out=[];
+  out.push(likelyPartMatch(ic,text)?
+    result('PASS','Datasheet / IC 型號一致性',`${ic.ref} · ${ic.mpn||ic.value}`,'在 Datasheet 文字中找到與選定 IC 相符的料號資訊','可繼續自動檢查') :
+    result('REVIEW','Datasheet / IC 型號一致性',`${ic.ref} · ${ic.mpn||ic.value}`,'無法在 PDF 文字中可靠確認料號','請確認上傳的是這顆 IC 的正確 Datasheet'));
+
+  for(const r of rules){
+    const net=r.net||'';
+    const ev=r.evidence ? `Datasheet: ${r.evidence.slice(0,180)}` : 'Datasheet 中未找到可可靠擷取的 Pin 說明文字';
+    if(r.category==='NC'){
+      out.push(!net?
+        result('PASS',`${r.pin} NC 檢查`,`${r.pin} Pin ${r.num}`,'EXP 顯示未連接','符合 NC 的一般預期') :
+        result('REVIEW',`${r.pin} NC 檢查`,`${r.pin} → ${net}`,ev,'Pin 名稱看似 NC，但線路有連接；請依 Datasheet 確認是否允許'));
+      continue;
+    }
+    if(r.category==='GROUND'){
+      out.push(isGround(net)?
+        result('PASS',`${r.pin} Ground`,`${r.pin} → ${net}`,ev,'已連接 Ground') :
+        result('FAIL',`${r.pin} Ground`,`${r.pin} → ${net||'未連接'}`,ev,'此 Pin 被辨識為 Ground 類型，請檢查 GND 接線'));
+      continue;
+    }
+    if(r.category==='SUPPLY'){
+      if(!net){
+        out.push(result('FAIL',`${r.pin} Supply`,`${r.pin} Pin ${r.num}`,ev,'Supply 類 Pin 不應浮接；請確認'));
+      }else{
+        const cap=anyGroundCap(net);
+        out.push(cap?
+          result('PASS',`${r.pin} Supply / Decoupling`,`${r.pin} → ${net}`,`${ev}；找到 ${cap.ref} ${cap.value} 對 GND`,'已找到 local decoupling path') :
+          result('REVIEW',`${r.pin} Supply / Decoupling`,`${r.pin} → ${net}`,ev,'Supply 已接 Net，但沒有找到明確 local decoupling；請依 Datasheet Recommended Circuit 確認'));
+      }
+      continue;
+    }
+    if(r.category==='BOOTSTRAP'){
+      const sw=pairedSwitchForBoot(r.pin,ic);
+      const cap=sw?findBootstrap(net,sw.net):null;
+      out.push(cap?
+        result('PASS',`${r.pin} Bootstrap`,`${r.pin} ${net} ↔ ${sw.name} ${sw.net}`,`${ev}；找到 ${cap.ref} ${cap.value}`,'Bootstrap path 已建立') :
+        result('REVIEW',`${r.pin} Bootstrap`,`${r.pin} → ${net||'未連接'}`,ev,'未能確認 Bootstrap capacitor 與對應 SW/LX/PHASE 的連線，請人工確認'));
+      continue;
+    }
+    if(r.category==='SWITCH'){
+      const p=hasSwitchPath(net);
+      out.push(p?
+        result('PASS',`${r.pin} Switching Node`,`${r.pin} → ${net}`,`${ev}；Net 上找到 ${p.ref} ${p.value}`,'Switching node 有接至電感/MOSFET 類功率元件') :
+        result('REVIEW',`${r.pin} Switching Node`,`${r.pin} → ${net||'未連接'}`,ev,'未找到典型功率元件；不同 topology 可能有例外，請確認'));
+      continue;
+    }
+    if(r.category==='GATE_DRIVE'){
+      const g=hasGatePath(net);
+      out.push(g?
+        result('PASS',`${r.pin} Gate Drive`,`${r.pin} → ${net}`,`${ev}；找到 ${g.part.ref}.${g.pin.name}`,'已追蹤到 MOSFET Gate') :
+        result('REVIEW',`${r.pin} Gate Drive`,`${r.pin} → ${net||'未連接'}`,ev,'沒有追蹤到 MOSFET Gate，請確認 driver / resistor / gate 接線'));
+      continue;
+    }
+    if(r.category==='FEEDBACK'){
+      out.push(net && hasResistorNetwork(net)?
+        result('PASS',`${r.pin} Feedback`,`${r.pin} → ${net}`,`${ev}；找到回授電阻網路`,'具備典型 Feedback network 特徵') :
+        result('REVIEW',`${r.pin} Feedback`,`${r.pin} → ${net||'未連接'}`,ev,'未找到明顯分壓/回授電阻網路，請依 Datasheet 確認'));
+      continue;
+    }
+    if(r.category==='DIGITAL_BUS'){
+      out.push(net?
+        result('PASS',`${r.pin} Digital Bus`,`${r.pin} → ${net}`,ev,'Pin 已有連線；Pull-up 電壓與 Host 端仍請依系統規格確認') :
+        result('REVIEW',`${r.pin} Digital Bus`,`${r.pin} Pin ${r.num}`,ev,'Bus Pin 為浮接；若功能有使用請確認'));
+      continue;
+    }
+    if(r.category==='ENABLE' || r.category==='CONTROL'){
+      out.push(net?
+        result('PASS',`${r.pin} Control`,`${r.pin} → ${net}`,ev,'Control Pin 已有明確 Net') :
+        result('REVIEW',`${r.pin} Control`,`${r.pin} Pin ${r.num}`,ev,'Control Pin 浮接；請確認 Datasheet 是否允許 internal pull-up/down'));
+      continue;
+    }
+    if(r.category==='OPEN_DRAIN'){
+      const pu=findPullup(net);
+      out.push(pu?
+        result('PASS',`${r.pin} Open-Drain Pull-up`,`${r.pin} → ${net}`,`${ev}；找到 ${pu.part.ref} pull-up 至 ${pu.rail}`,'Open-drain pull-up path 已找到') :
+        result('REVIEW',`${r.pin} Open-Drain Pull-up`,`${r.pin} → ${net||'未連接'}`,ev,'Datasheet 文字疑似描述 open-drain，但未找到 pull-up resistor，請確認'));
+      continue;
+    }
+    if(r.category==='STATUS'){
+      out.push(net?
+        result('PASS',`${r.pin} Status`,`${r.pin} → ${net}`,ev,'Status Pin 已連接') :
+        result('REVIEW',`${r.pin} Status`,`${r.pin} Pin ${r.num}`,ev,'Status Pin 未連接；若功能不用可能合理'));
+      continue;
+    }
+    if(r.category==='COMPENSATION'){
+      out.push(net && hasRcNetwork(net)?
+        result('PASS',`${r.pin} Compensation`,`${r.pin} → ${net}`,`${ev}；找到 R/C network`,'具備典型 compensation network 特徵') :
+        result('REVIEW',`${r.pin} Compensation`,`${r.pin} → ${net||'未連接'}`,ev,'沒有找到明顯 R/C compensation network，請依 Datasheet 設計'));
+      continue;
+    }
+    if(r.category==='CURRENT_SENSE'){
+      const peer=findSensePeer(r,rules);
+      if(peer){
+        const sh=findShuntBetweenSense(net,peer.net);
+        out.push(sh?
+          result('PASS',`${r.pin} Current Sense`,`${r.pin} ${net} / ${peer.pin} ${peer.net}`,`${ev}；辨識到 ${sh.ref} ${sh.value} Shunt`,'差動 Current Sense path 合理') :
+          result('REVIEW',`${r.pin} Current Sense`,`${r.pin} ${net} / ${peer.pin} ${peer.net}`,ev,'未能辨識低阻 Shunt；請檢查 current-sense routing / filter'));
+      }else{
+        out.push(result('REVIEW',`${r.pin} Current Sense`,`${r.pin} → ${net||'未連接'}`,ev,'找到 Sense 類 Pin，但無法可靠辨識配對 Pin'));
+      }
+      continue;
+    }
+    if(r.category==='THERMAL_SENSE'){
+      out.push(net?
+        result('PASS',`${r.pin} Thermal Sense`,`${r.pin} → ${net}`,ev,'Pin 已連接') :
+        result('REVIEW',`${r.pin} Thermal Sense`,`${r.pin} Pin ${r.num}`,ev,'Pin 未連接；是否可停用需依 Datasheet 確認'));
+      continue;
+    }
+    if(!net && r.category==='GENERAL'){
+      out.push(result('REVIEW',`${r.pin} 未連接`,`${r.pin} Pin ${r.num}`,ev,'Datasheet Pin 類型未能自動分類且目前為浮接，請人工確認'));
+    }
+  }
+  return out;
+}
+
+function renderCircuitReview(){
+  reviewBody.innerHTML='';
+  let pass=0,fail=0,rev=0;
+  reviewState.results.forEach(r=>{
+    if(r.status==='PASS')pass++; else if(r.status==='FAIL')fail++; else rev++;
+    const cls=r.status==='PASS'?'good':r.status==='FAIL'?'bad':'warn';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><span class="badge ${cls}">${r.status}</span></td><td><b>${esc(r.check)}</b></td><td>${esc(r.pinNet)}</td><td>${esc(r.evidence)}</td><td>${esc(r.advice)}</td>`;
+    reviewBody.appendChild(tr);
+  });
+  rTotal.textContent=reviewState.results.length;
+  rPass.textContent=pass;
+  rFail.textContent=fail;
+  rReview.textContent=rev;
+  reviewSummary.classList.remove('hidden');
+  reviewSummary.scrollIntoView({behavior:'smooth'});
+}
+function exportCircuitReview(){
+  if(!reviewState.selected) return;
+  const ic=reviewState.selected;
+  const rows=[
+    ['Power AI Circuit Review'],
+    ['IC',`${ic.ref} ${ic.mfg} ${ic.mpn||ic.value}`],
+    [],
+    ['Status','Check','Pin / Net','Evidence','Recommendation']
+  ];
+  reviewState.results.forEach(r=>rows.push([r.status,r.check,r.pinNet,r.evidence,r.advice]));
+  downloadCsv(`Circuit_Review_${ic.ref}_${ic.mpn||ic.value}.csv`,rows);
+}
+
+document.querySelectorAll('.feature').forEach(f=>f.addEventListener('click',()=>{
+function parseAllEXP(text){
+  const lines=text.split(/\r?\n/).filter(Boolean);
+  const hline=lines.find(x=>x.startsWith('"HEADER"'));
+  if(!hline) throw new Error('找不到 EXP HEADER');
+  const header=parseTSV(hline);
+  const idx={}; header.forEach((h,i)=>idx[h]=i);
+  const parts=[]; let current=null;
+
+  for(const line of lines){
+    const cols=parseTSV(line); const id=cols[0]||'';
+    if(id.startsWith('PARTINST:')){
+      if(current) parts.push(current);
+      current={
+        ref:cols[idx['Part Reference']]||'',
+        value:cols[idx['Value']]||'',
+        bom:cols[idx['BOM']]||'',
+        datasheet:cols[idx['Datasheet']]||'',
+        desc:cols[idx['Description']]||'',
+        mfg:cols[idx['Mfg']]||'',
+        mpn:cols[idx['Mfg Part Number']]||'',
+        type:cols[idx['Part Type']]||'',
+        pins:[]
+      };
+    }else if(id.startsWith('PININST:') && current){
+      const raw=cols[1]||'';
+      const name=raw.includes(':')?raw.substring(raw.indexOf(':')+1):raw;
+      current.pins.push({
+        name:name,
+        net:cols[idx['Net Name']]||'',
+        num:cols[idx['Number']]||'',
+        electrical:cols[idx['Type']]||''
+      });
+    }
+  }
+  if(current) parts.push(current);
+  return parts;
+}
+
+function buildReviewGraph(parts){
+  reviewState.partMap={}; reviewState.netMap={};
+  parts.forEach(p=>{
+    reviewState.partMap[p.ref]=p;
+    p.pins.forEach(pin=>{
+      if(!pin.net) return;
+      if(!reviewState.netMap[pin.net]) reviewState.netMap[pin.net]=[];
+      reviewState.netMap[pin.net].push({part:p,pin});
+    });
+  });
+}
+
+function installed(p){ return (p.bom||'').toUpperCase()!=='NI'; }
+function pinOf(p,name){ return p.pins.find(x=>x.name.toUpperCase()===name.toUpperCase()); }
+function isGround(net){ return /^(GND|PGND|AGND|DGND)$/i.test(net||'') || /(^|_)GND($|_)/i.test(net||''); }
+function otherNet(p,net){
+  const ns=[...new Set(p.pins.map(x=>x.net).filter(Boolean))];
+  if(ns.length!==2) return null;
+  return ns[0]===net?ns[1]:ns[1]===net?ns[0]:null;
+}
+function isResistor(p){ return /Resistor/i.test(p.type||''); }
+function isCap(p){ return /Capacitor/i.test(p.type||''); }
+function isInductor(p){ return /Inductor/i.test(p.type||''); }
+function isMosfet(p){ return /Transistor/i.test(p.type||'') || /MOSFET/i.test((p.desc||'')+' '+(p.value||'')); }
+function isLowOhm(p){ return /^\s*\d+(?:\.\d+)?m(?:_|$)/i.test(p.value||''); }
+
+function componentsOn(net){
+  return (reviewState.netMap[net]||[]).map(x=>x.part).filter((p,i,a)=>a.indexOf(p)===i);
+}
+function directPartBetween(netA,netB,predicate){
+  for(const p of reviewState.parts){
+    if(!installed(p) || !predicate(p)) continue;
+    const ns=[...new Set(p.pins.map(x=>x.net).filter(Boolean))];
+    if(ns.includes(netA)&&ns.includes(netB)) return p;
+  }
+  return null;
+}
+function reachableByResistors(startNet,maxDepth=2,excludeLowOhm=false){
+  const seen=new Set([startNet]); let front=[startNet];
+  for(let d=0;d<maxDepth;d++){
+    const next=[];
+    front.forEach(net=>{
+      (reviewState.netMap[net]||[]).forEach(({part})=>{
+        if(!installed(part)||!isResistor(part)) return;
+        if(excludeLowOhm && isLowOhm(part)) return;
+        const n2=otherNet(part,net); if(!n2||seen.has(n2)) return;
+        seen.add(n2); next.push(n2);
+      });
+    });
+    front=next;
+  }
+  return seen;
+}
+function findCapToGround(net,maxResDepth=0){
+  const nets=maxResDepth?reachableByResistors(net,maxResDepth):new Set([net]);
+  for(const n of nets){
+    for(const p of componentsOn(n)){
+      if(!installed(p)||!isCap(p)) continue;
+      const n2=otherNet(p,n);
+      if(n2 && isGround(n2)) return p;
+    }
+  }
+  return null;
+}
+function findBootstrap(btstNet,swNet){
+  const nets=reachableByResistors(btstNet,1);
+  for(const n of nets){
+    const p=directPartBetween(n,swNet,isCap);
+    if(p) return p;
+  }
+  return null;
+}
+function findGatePath(driverNet){
+  const nets=reachableByResistors(driverNet,2);
+  for(const n of nets){
+    for(const item of (reviewState.netMap[n]||[])){
+      if(!installed(item.part)||!isMosfet(item.part)) continue;
+      if(/^G/i.test(item.pin.name||'')) return {part:item.part,pin:item.pin,net:n};
+    }
+  }
+  return null;
+}
+function findShuntBetweenSense(pinNetA,pinNetB){
+  const a=reachableByResistors(pinNetA,3,true);
+  const b=reachableByResistors(pinNetB,3,true);
+  for(const p of reviewState.parts){
+    if(!installed(p)||!isResistor(p)||!isLowOhm(p)) continue;
+    const ns=[...new Set(p.pins.map(x=>x.net).filter(Boolean))];
+    if(ns.length!==2) continue;
+    if((a.has(ns[0])&&b.has(ns[1]))||(a.has(ns[1])&&b.has(ns[0]))) return p;
+  }
+  return null;
+}
+function externalBusPath(pinNet,pattern){
+  const nets=reachableByResistors(pinNet,3);
+  for(const n of nets) if(pattern.test(n)) return n;
+  return null;
+}
+function result(status,check,pinNet,evidence,advice){
+  return {status,check,pinNet,evidence,advice};
+}
+function sy6969Review(ic){
+  const out=[];
+  const pnet=n=>pinOf(ic,n)?.net||'';
+
+  [['PGND','Power Ground'],['THERMAL PAD','Thermal Pad']].forEach(([pn,label])=>{
+    const net=pnet(pn);
+    out.push(isGround(net)?
+      result('PASS',label,`${pn} → ${net}`,'已直接連接 GND','無需處理') :
+      result('FAIL',label,`${pn} → ${net||'未連接'}`,'未偵測到 GND 連線','請依 Datasheet 確認並接回正確 GND'));
+  });
+
+  [['VBUS','VBUS Local Decoupling'],['VDDX','VDDX Local Decoupling'],['REGN','REGN Local Decoupling']].forEach(([pn,label])=>{
+    const net=pnet(pn), cap=findCapToGround(net,0);
+    out.push(cap?
+      result('PASS',label,`${pn} → ${net}`,`${cap.ref} (${cap.value}) 連接 ${net} ↔ GND`,'無需處理') :
+      result('FAIL',label,`${pn} → ${net||'未連接'}`,'未找到直接對 GND 的實裝電容','確認是否缺少 IC 建議的 local decoupling capacitor'));
+  });
+
+  const sw1=pnet('SW1'), sw2=pnet('SW2');
+  const ind=directPartBetween(sw1,sw2,isInductor);
+  out.push(ind?
+    result('PASS','Buck-Boost 主電感',`SW1 ${sw1} ↔ SW2 ${sw2}`,`${ind.ref} (${ind.value}) 直接跨接兩個 Phase Node`,'符合單電感 4-switch Buck-Boost 結構') :
+    result('FAIL','Buck-Boost 主電感',`SW1 ${sw1} ↔ SW2 ${sw2}`,'兩個 SW Node 之間未找到實裝電感','檢查主電感是否缺漏或 Net 連接錯誤'));
+
+  [['BTST1','SW1'],['BTST2','SW2']].forEach(([b,s])=>{
+    const cap=findBootstrap(pnet(b),pnet(s));
+    out.push(cap?
+      result('PASS',`${b} Bootstrap`,`${b} ${pnet(b)} ↔ ${s} ${pnet(s)}`,`${cap.ref} (${cap.value}) 已形成 Bootstrap capacitor path`,'無需處理') :
+      result('FAIL',`${b} Bootstrap`,`${b} ${pnet(b)} ↔ ${s} ${pnet(s)}`,'找不到 Bootstrap capacitor path','確認 Bootstrap capacitor 是否接在 BTST 與對應 SW Node 之間'));
+  });
+
+  [['HIDRV1','High-side Gate 1'],['LODRV1','Low-side Gate 1'],['HIDRV2','High-side Gate 2'],['LODRV2','Low-side Gate 2']].forEach(([pn,label])=>{
+    const g=findGatePath(pnet(pn));
+    out.push(g?
+      result('PASS',label,`${pn} → ${pnet(pn)}`,`經驅動電阻連到 ${g.part.ref}.${g.pin.name} (${g.net})`,'Gate drive path 已建立') :
+      result('FAIL',label,`${pn} → ${pnet(pn)||'未連接'}`,'未找到 MOSFET Gate path','檢查 Gate resistor / MOSFET gate 接線'));
+  });
+
+  const acShunt=findShuntBetweenSense(pnet('ACN'),pnet('ACP'));
+  out.push(acShunt?
+    result('PASS','Adapter Current Sense',`ACN ${pnet('ACN')} / ACP ${pnet('ACP')}`,`${acShunt.ref} (${acShunt.value}) 被辨識為差動取樣 Shunt`,'無需處理') :
+    result('FAIL','Adapter Current Sense',`ACN ${pnet('ACN')} / ACP ${pnet('ACP')}`,'未找到兩個 Sense Pin 對應的低阻 Shunt','確認 ACN / ACP 是否跨接正確的 Adapter current-sense resistor'));
+
+  const batShunt=findShuntBetweenSense(pnet('SRP'),pnet('SRN'));
+  out.push(batShunt?
+    result('PASS','Battery Current Sense',`SRP ${pnet('SRP')} / SRN ${pnet('SRN')}`,`${batShunt.ref} (${batShunt.value}) 被辨識為 Battery Shunt`,'無需處理') :
+    result('FAIL','Battery Current Sense',`SRP ${pnet('SRP')} / SRN ${pnet('SRN')}`,'未找到兩個 Sense Pin 對應的低阻 Shunt','確認 SRP / SRN 是否跨接正確的 Battery current-sense resistor'));
+
+  const batGate=findGatePath(pnet('BATDRV#'));
+  out.push(batGate?
+    result('PASS','BATDRV# → Battery FET',`BATDRV# → ${pnet('BATDRV#')}`,`已連到 ${batGate.part.ref}.${batGate.pin.name} (${batGate.net})`,'Battery FET gate path 已建立') :
+    result('FAIL','BATDRV# → Battery FET',`BATDRV# → ${pnet('BATDRV#')}`,'找不到 Battery MOSFET Gate path','確認 BATDRV# 與 BATFET Gate 接線'));
+
+  const sda=externalBusPath(pnet('SDA'),/SDA|I2C/i);
+  const scl=externalBusPath(pnet('SCL'),/SCL|I2C/i);
+  out.push(sda?
+    result('PASS','SMBus SDA',`SDA → ${pnet('SDA')}`,`可經串聯電阻追蹤至 ${sda}`,'SDA 並非浮接') :
+    result('REVIEW','SMBus SDA',`SDA → ${pnet('SDA')||'未連接'}`,'未能追蹤到外部 I²C/SMBus Net','請確認 SDA 是否有接至 EC / Host'));
+  out.push(scl?
+    result('PASS','SMBus SCL',`SCL → ${pnet('SCL')}`,`可經串聯電阻追蹤至 ${scl}`,'SCL 並非浮接') :
+    result('REVIEW','SMBus SCL',`SCL → ${pnet('SCL')||'未連接'}`,'未能追蹤到外部 I²C/SMBus Net','請確認 SCL 是否有接至 EC / Host'));
+
+  const cmp=pinOf(ic,'CMPOUT');
+  if(cmp && !cmp.net){
+    out.push(result('REVIEW','CMPOUT 未連接','CMPOUT Pin 15','EXP 顯示此 Pin 無 Net','此輸出是否可 NC 需依實際功能需求與 Datasheet 確認；系統不直接判 FAIL'));
+  }
+
+  ['NC1','NC2'].forEach(pn=>{
+    const pin=pinOf(ic,pn);
+    if(pin && pin.net){
+      out.push(result('REVIEW',`${pn} Symbol / Net 一致性`,`${pn} → ${pin.net}`,`Symbol 名稱為 ${pn}，但線路有外接元件`,'確認目前使用的 Symbol pin name 是否與最新版 Datasheet 一致；若實際為 COMP pin，建議更新 Symbol 命名避免誤判'));
+    }
+  });
+
+  return out;
+}
+function basicUnsupportedReview(ic){
+  const out=[];
+  const unconnected=ic.pins.filter(p=>!p.net && !/NC/i.test(p.name||''));
+  if(unconnected.length){
+    unconnected.forEach(p=>out.push(result('REVIEW','未連接 Pin',`${p.name} Pin ${p.num}`, 'EXP 顯示無 Net','此 IC 尚未建立專用 Datasheet 規則，請人工確認此 Pin 是否允許 NC')));
+  }else{
+    out.push(result('PASS','基本連線掃描',ic.ref,'未發現明顯的非 NC 浮接 Pin','此 IC 尚未建立專用規則，仍需人工 Datasheet Review'));
+  }
+  out.push(result('REVIEW','專用規則庫',`${ic.mfg} ${ic.mpn||ic.value}`,'目前尚未使用 Datasheet 建立此 IC 的完整 Pin Rule','將此 IC 加入 Rule Library 後才能進行精準自動檢查'));
+  return out;
+}
+function powerIcCandidates(parts){
+  return parts.filter(p=>{
+    const t=(p.type||'')+' '+(p.desc||'')+' '+(p.value||'')+' '+(p.mpn||'');
+    return installed(p) && (/Integrated Circuit/i.test(p.type||'') || /charger|buck|boost|regulator|PMIC|power controller/i.test(t));
+  });
+}
+function updateReviewIcInfo(){
+  const ref=reviewIcSelect.value, ic=reviewState.partMap[ref];
+  if(!ic) return;
+  reviewState.selected=ic;
+  const supported=/SY6969|SY20779/i.test((ic.mpn||'')+' '+(ic.value||''));
+  reviewIcInfo.innerHTML=`<b>${esc(ic.ref)} · ${esc(ic.mfg)} ${esc(ic.mpn||ic.value)}</b><br>${esc(ic.desc)}<br><span class="small">${supported?'✅ 已有 SY6969C/SY20779C 專用規則庫':'📄 此 IC 可使用 Datasheet PDF 自動建立通用規則'}</span>`;
+  if(ic.datasheet){
+    reviewDatasheet.href=ic.datasheet;
+    reviewDatasheet.classList.remove('hidden');
+  }else{
+    reviewDatasheet.classList.add('hidden');
+    reviewDatasheet.removeAttribute('href');
+  }
+}
+function runCircuitReview(){
+  const ic=reviewState.partMap[reviewIcSelect.value];
+  if(!ic) return;
+  reviewState.selected=ic;
+  const builtIn=/SY6969|SY20779/i.test((ic.mpn||'')+' '+(ic.value||''));
+  if(builtIn){
+    reviewState.results=sy6969Review(ic);
+    datasheetAnalysisInfo.classList.add('hidden');
+  }else{
+    if(!reviewState.datasheetText){
+      reviewState.results=[
+        result('REVIEW','需要 Datasheet',`${ic.ref} · ${ic.mpn||ic.value}`,'這顆 IC 尚無內建專用規則，且尚未上傳 Datasheet PDF','請在上方第②格上傳此 IC 的官方 Datasheet PDF，再重新按「開始線路檢查」')
+      ];
+      renderCircuitReview();
+      return;
+    }
+    reviewState.genericRules=generateGenericRules(ic,reviewState.datasheetText);
+    reviewState.results=genericDatasheetReview(ic,reviewState.datasheetText,reviewState.genericRules);
+    datasheetAnalysisInfo.innerHTML=`<b>Datasheet 已解析：</b>${esc(reviewState.datasheetName)} · ${reviewState.datasheetPages} 頁 · 產生 ${reviewState.genericRules.length} 條 Pin Rule<div class="rulelist">${[...new Set(reviewState.genericRules.map(r=>r.category))].map(x=>`<span class="rulechip">${esc(x)}</span>`).join('')}</div>`;
+    datasheetAnalysisInfo.classList.remove('hidden');
+  }
+  renderCircuitReview();
+}
+
+function cleanPinName(name){
+  return String(name||'').toUpperCase().replace(/\s+/g,'').replace(/[^A-Z0-9_#\/+\-]/g,'');
+}
+function pinCategory(name, evidence=''){
+  const n=cleanPinName(name), e=String(evidence||'').toUpperCase();
+  if(/^(NC|N\/C|DNC)/.test(n)) return 'NC';
+  if(/THERMAL|EXPOSED|EPAD|POWERPAD|PAD/.test(n)) return 'GROUND';
+  if(/(^|_)(PGND|AGND|DGND|SGND|GND)(_|$)/.test(n) || n==='GND') return 'GROUND';
+  if(/^(VIN|VBUS|VCC|VDD|AVDD|PVDD|VBIAS|BIAS|REGN|LDO|VREG)/.test(n)) return 'SUPPLY';
+  if(/BOOT|BST|BTST/.test(n)) return 'BOOTSTRAP';
+  if(/^(SW|LX|PHASE|PH|SWITCH)/.test(n)) return 'SWITCH';
+  if(/HIDRV|LODRV|HGATE|LGATE|DRVH|DRVL|GATE|BGATE|BATDRV/.test(n)) return 'GATE_DRIVE';
+  if(/^(FB|VFB|VSENSE|VSNS|SENSEV|VOUT_SENSE)/.test(n)) return 'FEEDBACK';
+  if(/SDA|SCL|SMB|I2C/.test(n)) return 'DIGITAL_BUS';
+  if(/EN|ENABLE|CE#?$|HIZ/.test(n)) return 'ENABLE';
+  if(/PGOOD|POWERGOOD|ACOK|CHG_OK|CHGOK|PROCHOT|ALERT|INT#?$/.test(n)) return /OPEN.?DRAIN/.test(e)?'OPEN_DRAIN':'STATUS';
+  if(/COMP|ITH|EAOUT/.test(n)) return 'COMPENSATION';
+  if(/CSP|CSN|ACN|ACP|SRP|SRN|ISEN|ISNS|SENSE\+|SENSE\-|CS\+|CS\-/.test(n)) return 'CURRENT_SENSE';
+  if(/NTC|TS|THERM/.test(n)) return 'THERMAL_SENSE';
+  if(/RESET|RST|MODE|SEL|ADDR|GPIO/.test(n)) return 'CONTROL';
+  return 'GENERAL';
+}
+function datasheetSnippet(text,pinName){
+  const raw=String(text||''), upper=raw.toUpperCase(), pn=cleanPinName(pinName);
+  const candidates=[pn,pn.replace(/#$/,''),pn.replace(/\//g,' '),pn.replace(/_/g,' ')]
+    .filter(x=>x.length>=2);
+  let pos=-1;
+  for(const c of candidates){ pos=upper.indexOf(c); if(pos>=0) break; }
+  if(pos<0) return '';
+  const start=Math.max(0,pos-160), end=Math.min(raw.length,pos+420);
+  return raw.slice(start,end).replace(/\s+/g,' ').trim();
+}
+function generateGenericRules(ic,text){
+  return ic.pins.map(pin=>{
+    const evidence=datasheetSnippet(text,pin.name);
+    return {
+      pin:pin.name,
+      num:pin.num,
+      net:pin.net,
+      category:pinCategory(pin.name,evidence),
+      evidence
+    };
+  });
+}
+function anyGroundCap(net){
+  if(!net) return null;
+  const direct=findCapToGround(net,0);
+  if(direct) return direct;
+  return findCapToGround(net,1);
+}
+function hasResistorNetwork(net){
+  if(!net) return false;
+  return (reviewState.netMap[net]||[]).some(x=>installed(x.part)&&isResistor(x.part));
+}
+function hasRcNetwork(net){
+  if(!net) return false;
+  const comps=componentsOn(net).filter(installed);
+  return comps.some(isResistor) && comps.some(isCap);
+}
+function findPullup(net){
+  if(!net) return null;
+  for(const p of componentsOn(net)){
+    if(!installed(p)||!isResistor(p)) continue;
+    const n2=otherNet(p,net); if(!n2) continue;
+    const v=inferVoltage(n2);
+    if((Number.isFinite(v)&&v>0) || /^\+|VCC|VDD|REGN|LDO/i.test(n2)) return {part:p,rail:n2};
+  }
+  return null;
+}
+function pairedSwitchForBoot(pinName,ic){
+  const n=cleanPinName(pinName);
+  const digit=(n.match(/(\d+)$/)||[])[1];
+  if(digit){
+    const p=ic.pins.find(x=>new RegExp(`^(SW|LX|PHASE)${digit}$`,'i').test(cleanPinName(x.name)));
+    if(p) return p;
+  }
+  return ic.pins.find(x=>/^(SW|LX|PHASE)/i.test(cleanPinName(x.name)))||null;
+}
+function hasSwitchPath(net){
+  if(!net) return null;
+  for(const p of componentsOn(net)){
+    if(!installed(p)) continue;
+    if(isInductor(p)||isMosfet(p)) return p;
+  }
+  return null;
+}
+function hasGatePath(net){
+  return findGatePath(net);
+}
+function findSensePeer(rule,rules){
+  const same=rules.filter(r=>r!==rule && r.category==='CURRENT_SENSE');
+  if(!same.length) return null;
+  const n=cleanPinName(rule.pin);
+  const swaps=[
+    ['P','N'],['N','P'],['+','-'],['-','+']
+  ];
+  for(const [a,b] of swaps){
+    if(n.endsWith(a)){
+      const base=n.slice(0,-a.length);
+      const peer=same.find(r=>cleanPinName(r.pin)===base+b);
+      if(peer) return peer;
+    }
+  }
+  return same[0];
+}
+function likelyPartMatch(ic,text){
+  const upper=String(text||'').toUpperCase().replace(/[\s\-]/g,'');
+  const vals=[ic.mpn,ic.value].filter(Boolean).map(x=>String(x).toUpperCase().replace(/[\s\-]/g,''));
+  for(const v0 of vals){
+    const variants=[v0];
+    const m=v0.match(/^([A-Z]{1,8}\d{3,8}[A-Z]?)/);
+    if(m) variants.push(m[1]);
+    if(variants.some(v=>v.length>=5 && upper.includes(v))) return true;
+  }
+  return false;
+}
+function genericDatasheetReview(ic,text,rules){
+  const out=[];
+  out.push(likelyPartMatch(ic,text)?
+    result('PASS','Datasheet / IC 型號一致性',`${ic.ref} · ${ic.mpn||ic.value}`,'在 Datasheet 文字中找到與選定 IC 相符的料號資訊','可繼續自動檢查') :
+    result('REVIEW','Datasheet / IC 型號一致性',`${ic.ref} · ${ic.mpn||ic.value}`,'無法在 PDF 文字中可靠確認料號','請確認上傳的是這顆 IC 的正確 Datasheet'));
+
+  for(const r of rules){
+    const net=r.net||'';
+    const ev=r.evidence ? `Datasheet: ${r.evidence.slice(0,180)}` : 'Datasheet 中未找到可可靠擷取的 Pin 說明文字';
+    if(r.category==='NC'){
+      out.push(!net?
+        result('PASS',`${r.pin} NC 檢查`,`${r.pin} Pin ${r.num}`,'EXP 顯示未連接','符合 NC 的一般預期') :
+        result('REVIEW',`${r.pin} NC 檢查`,`${r.pin} → ${net}`,ev,'Pin 名稱看似 NC，但線路有連接；請依 Datasheet 確認是否允許'));
+      continue;
+    }
+    if(r.category==='GROUND'){
+      out.push(isGround(net)?
+        result('PASS',`${r.pin} Ground`,`${r.pin} → ${net}`,ev,'已連接 Ground') :
+        result('FAIL',`${r.pin} Ground`,`${r.pin} → ${net||'未連接'}`,ev,'此 Pin 被辨識為 Ground 類型，請檢查 GND 接線'));
+      continue;
+    }
+    if(r.category==='SUPPLY'){
+      if(!net){
+        out.push(result('FAIL',`${r.pin} Supply`,`${r.pin} Pin ${r.num}`,ev,'Supply 類 Pin 不應浮接；請確認'));
+      }else{
+        const cap=anyGroundCap(net);
+        out.push(cap?
+          result('PASS',`${r.pin} Supply / Decoupling`,`${r.pin} → ${net}`,`${ev}；找到 ${cap.ref} ${cap.value} 對 GND`,'已找到 local decoupling path') :
+          result('REVIEW',`${r.pin} Supply / Decoupling`,`${r.pin} → ${net}`,ev,'Supply 已接 Net，但沒有找到明確 local decoupling；請依 Datasheet Recommended Circuit 確認'));
+      }
+      continue;
+    }
+    if(r.category==='BOOTSTRAP'){
+      const sw=pairedSwitchForBoot(r.pin,ic);
+      const cap=sw?findBootstrap(net,sw.net):null;
+      out.push(cap?
+        result('PASS',`${r.pin} Bootstrap`,`${r.pin} ${net} ↔ ${sw.name} ${sw.net}`,`${ev}；找到 ${cap.ref} ${cap.value}`,'Bootstrap path 已建立') :
+        result('REVIEW',`${r.pin} Bootstrap`,`${r.pin} → ${net||'未連接'}`,ev,'未能確認 Bootstrap capacitor 與對應 SW/LX/PHASE 的連線，請人工確認'));
+      continue;
+    }
+    if(r.category==='SWITCH'){
+      const p=hasSwitchPath(net);
+      out.push(p?
+        result('PASS',`${r.pin} Switching Node`,`${r.pin} → ${net}`,`${ev}；Net 上找到 ${p.ref} ${p.value}`,'Switching node 有接至電感/MOSFET 類功率元件') :
+        result('REVIEW',`${r.pin} Switching Node`,`${r.pin} → ${net||'未連接'}`,ev,'未找到典型功率元件；不同 topology 可能有例外，請確認'));
+      continue;
+    }
+    if(r.category==='GATE_DRIVE'){
+      const g=hasGatePath(net);
+      out.push(g?
+        result('PASS',`${r.pin} Gate Drive`,`${r.pin} → ${net}`,`${ev}；找到 ${g.part.ref}.${g.pin.name}`,'已追蹤到 MOSFET Gate') :
+        result('REVIEW',`${r.pin} Gate Drive`,`${r.pin} → ${net||'未連接'}`,ev,'沒有追蹤到 MOSFET Gate，請確認 driver / resistor / gate 接線'));
+      continue;
+    }
+    if(r.category==='FEEDBACK'){
+      out.push(net && hasResistorNetwork(net)?
+        result('PASS',`${r.pin} Feedback`,`${r.pin} → ${net}`,`${ev}；找到回授電阻網路`,'具備典型 Feedback network 特徵') :
+        result('REVIEW',`${r.pin} Feedback`,`${r.pin} → ${net||'未連接'}`,ev,'未找到明顯分壓/回授電阻網路，請依 Datasheet 確認'));
+      continue;
+    }
+    if(r.category==='DIGITAL_BUS'){
+      out.push(net?
+        result('PASS',`${r.pin} Digital Bus`,`${r.pin} → ${net}`,ev,'Pin 已有連線；Pull-up 電壓與 Host 端仍請依系統規格確認') :
+        result('REVIEW',`${r.pin} Digital Bus`,`${r.pin} Pin ${r.num}`,ev,'Bus Pin 為浮接；若功能有使用請確認'));
+      continue;
+    }
+    if(r.category==='ENABLE' || r.category==='CONTROL'){
+      out.push(net?
+        result('PASS',`${r.pin} Control`,`${r.pin} → ${net}`,ev,'Control Pin 已有明確 Net') :
+        result('REVIEW',`${r.pin} Control`,`${r.pin} Pin ${r.num}`,ev,'Control Pin 浮接；請確認 Datasheet 是否允許 internal pull-up/down'));
+      continue;
+    }
+    if(r.category==='OPEN_DRAIN'){
+      const pu=findPullup(net);
+      out.push(pu?
+        result('PASS',`${r.pin} Open-Drain Pull-up`,`${r.pin} → ${net}`,`${ev}；找到 ${pu.part.ref} pull-up 至 ${pu.rail}`,'Open-drain pull-up path 已找到') :
+        result('REVIEW',`${r.pin} Open-Drain Pull-up`,`${r.pin} → ${net||'未連接'}`,ev,'Datasheet 文字疑似描述 open-drain，但未找到 pull-up resistor，請確認'));
+      continue;
+    }
+    if(r.category==='STATUS'){
+      out.push(net?
+        result('PASS',`${r.pin} Status`,`${r.pin} → ${net}`,ev,'Status Pin 已連接') :
+        result('REVIEW',`${r.pin} Status`,`${r.pin} Pin ${r.num}`,ev,'Status Pin 未連接；若功能不用可能合理'));
+      continue;
+    }
+    if(r.category==='COMPENSATION'){
+      out.push(net && hasRcNetwork(net)?
+        result('PASS',`${r.pin} Compensation`,`${r.pin} → ${net}`,`${ev}；找到 R/C network`,'具備典型 compensation network 特徵') :
+        result('REVIEW',`${r.pin} Compensation`,`${r.pin} → ${net||'未連接'}`,ev,'沒有找到明顯 R/C compensation network，請依 Datasheet 設計'));
+      continue;
+    }
+    if(r.category==='CURRENT_SENSE'){
+      const peer=findSensePeer(r,rules);
+      if(peer){
+        const sh=findShuntBetweenSense(net,peer.net);
+        out.push(sh?
+          result('PASS',`${r.pin} Current Sense`,`${r.pin} ${net} / ${peer.pin} ${peer.net}`,`${ev}；辨識到 ${sh.ref} ${sh.value} Shunt`,'差動 Current Sense path 合理') :
+          result('REVIEW',`${r.pin} Current Sense`,`${r.pin} ${net} / ${peer.pin} ${peer.net}`,ev,'未能辨識低阻 Shunt；請檢查 current-sense routing / filter'));
+      }else{
+        out.push(result('REVIEW',`${r.pin} Current Sense`,`${r.pin} → ${net||'未連接'}`,ev,'找到 Sense 類 Pin，但無法可靠辨識配對 Pin'));
+      }
+      continue;
+    }
+    if(r.category==='THERMAL_SENSE'){
+      out.push(net?
+        result('PASS',`${r.pin} Thermal Sense`,`${r.pin} → ${net}`,ev,'Pin 已連接') :
+        result('REVIEW',`${r.pin} Thermal Sense`,`${r.pin} Pin ${r.num}`,ev,'Pin 未連接；是否可停用需依 Datasheet 確認'));
+      continue;
+    }
+    if(!net && r.category==='GENERAL'){
+      out.push(result('REVIEW',`${r.pin} 未連接`,`${r.pin} Pin ${r.num}`,ev,'Datasheet Pin 類型未能自動分類且目前為浮接，請人工確認'));
+    }
+  }
+  return out;
+}
+
+function renderCircuitReview(){
+  reviewBody.innerHTML='';
+  let pass=0,fail=0,rev=0;
+  reviewState.results.forEach(r=>{
+    if(r.status==='PASS')pass++; else if(r.status==='FAIL')fail++; else rev++;
+    const cls=r.status==='PASS'?'good':r.status==='FAIL'?'bad':'warn';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><span class="badge ${cls}">${r.status}</span></td><td><b>${esc(r.check)}</b></td><td>${esc(r.pinNet)}</td><td>${esc(r.evidence)}</td><td>${esc(r.advice)}</td>`;
+    reviewBody.appendChild(tr);
+  });
+  rTotal.textContent=reviewState.results.length;
+  rPass.textContent=pass;
+  rFail.textContent=fail;
+  rReview.textContent=rev;
+  reviewSummary.classList.remove('hidden');
+  reviewSummary.scrollIntoView({behavior:'smooth'});
+}
+function exportCircuitReview(){
+  if(!reviewState.selected) return;
+  const ic=reviewState.selected;
+  const rows=[
+    ['Power AI Circuit Review'],
+    ['IC',`${ic.ref} ${ic.mfg} ${ic.mpn||ic.value}`],
+    [],
+    ['Status','Check','Pin / Net','Evidence','Recommendation']
+  ];
+  reviewState.results.forEach(r=>rows.push([r.status,r.check,r.pinNet,r.evidence,r.advice]));
+  downloadCsv(`Circuit_Review_${ic.ref}_${ic.mpn||ic.value}.csv`,rows);
+}
+
+document.querySelectorAll('.feature').forEach(x=>x.classList.remove('active'));f.classList.add('active');document.querySelectorAll('.module').forEach(x=>x.classList.remove('active'));document.getElementById(f.dataset.module).classList.add('active');}));
+fileInput.addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;fileStatus.textContent='讀取中：'+file.name;try{const buf=await file.arrayBuffer();const text=new TextDecoder('windows-1252').decode(buf);mlccState.parts=parseEXP(text);mlccState.unknown=new Set();mlccState.parts.forEach(p=>p.nets.forEach(n=>{if(inferVoltage(n)===null)mlccState.unknown.add(n);}));fileStatus.textContent=`已讀取 ${file.name}，找到 ${mlccState.parts.length} 顆實裝 MLCC。`;renderUnknown();summarySection.classList.add('hidden');}catch(err){fileStatus.textContent='讀取失敗：'+err.message;}});
+runBtn.addEventListener('click',calcResults);csvBtn.addEventListener('click',exportMlcc);
+pnSearch.addEventListener('click',runCross);pnInput.addEventListener('keydown',e=>{if(e.key==='Enter')runCross();});crossCsv.addEventListener('click',exportCross);
+
+
+async function extractPdfText(file){
+  datasheetFileStatus.textContent='正在載入 PDF 解析器…';
+  const pdfjsLib=await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/pdf.min.mjs');
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/pdf.worker.min.mjs';
+  const data=new Uint8Array(await file.arrayBuffer());
+  const doc=await pdfjsLib.getDocument({data}).promise;
+  let full='';
+  for(let p=1;p<=doc.numPages;p++){
+    datasheetFileStatus.textContent=`解析 Datasheet：${p}/${doc.numPages} 頁…`;
+    const page=await doc.getPage(p);
+    const tc=await page.getTextContent();
+    const text=tc.items.map(x=>x.str).join(' ');
+    full += `\n--- PAGE ${p} ---\n` + text;
+  }
+  return {text:full,pages:doc.numPages};
+}
+datasheetFileInput.addEventListener('change',async e=>{
+  const file=e.target.files[0]; if(!file)return;
+  reviewState.datasheetText='';
+  reviewState.datasheetPages=0;
+  reviewState.datasheetName=file.name;
+  datasheetAnalysisInfo.classList.add('hidden');
+  try{
+    const parsed=await extractPdfText(file);
+    reviewState.datasheetText=parsed.text;
+    reviewState.datasheetPages=parsed.pages;
+    datasheetFileStatus.textContent=`已讀取 ${file.name} · ${parsed.pages} 頁 · 可開始自動 Review`;
+    if(reviewState.selected) updateReviewIcInfo();
+  }catch(err){
+    datasheetFileStatus.textContent='Datasheet 解析失敗：'+err.message+'。請確認瀏覽器可連網後重試。';
+  }
+});
+
+reviewFileInput.addEventListener('change',async e=>{
+  const file=e.target.files[0]; if(!file)return;
+  reviewFileStatus.textContent='讀取中：'+file.name;
+  reviewSummary.classList.add('hidden');
+  try{
+    const buf=await file.arrayBuffer();
+    const text=new TextDecoder('windows-1252').decode(buf);
+    reviewState.parts=parseAllEXP(text);
+    buildReviewGraph(reviewState.parts);
+    const cands=powerIcCandidates(reviewState.parts);
+    reviewIcSelect.innerHTML='';
+    cands.forEach(ic=>{
+      const opt=document.createElement('option');
+      opt.value=ic.ref;
+      opt.textContent=`${ic.ref} · ${ic.mfg} ${ic.mpn||ic.value}`;
+      reviewIcSelect.appendChild(opt);
+    });
+    if(!cands.length){
+      reviewFileStatus.textContent=`已讀取 ${file.name}，但未自動找到 Power IC。`;
+      reviewControls.classList.add('hidden');
+      return;
+    }
+    const preferred=cands.find(x=>/SY6969|SY20779/i.test((x.mpn||'')+' '+(x.value||'')));
+    if(preferred) reviewIcSelect.value=preferred.ref;
+    reviewFileStatus.textContent=`已讀取 ${file.name}，找到 ${cands.length} 顆可能的 Power IC。`;
+    reviewControls.classList.remove('hidden');
+    updateReviewIcInfo();
+  }catch(err){
+    reviewFileStatus.textContent='讀取失敗：'+err.message;
+    reviewControls.classList.add('hidden');
+  }
+});
+reviewIcSelect.addEventListener('change',updateReviewIcInfo);
+reviewRunBtn.addEventListener('click',runCircuitReview);
+reviewCsvBtn.addEventListener('click',exportCircuitReview);
+</script>
+
+<script>
+(function(){
+  const PASS_HASH=1616633015;
+  const SESSION_KEY="power_ai_v05_unlocked";
+  const gate=document.getElementById("passGate");
+  const input=document.getElementById("passInput");
+  const btn=document.getElementById("passBtn");
+  const err=document.getElementById("passError");
+
+  function hashText(t){
+    let h=5381;
+    for(let i=0;i<t.length;i++) h=((h*33)^t.charCodeAt(i))>>>0;
+    return h>>>0;
+  }
+  function unlock(){
+    sessionStorage.setItem(SESSION_KEY,"1");
+    gate.classList.add("hidden");
+    document.body.classList.remove("pass-locked");
+  }
+  function check(){
+    err.textContent="";
+    if(hashText(input.value)===PASS_HASH) unlock();
+    else {err.textContent="密語錯誤，請重新輸入。";input.select();}
+  }
+  document.body.classList.add("pass-locked");
+  if(sessionStorage.getItem(SESSION_KEY)==="1") unlock();
+  else setTimeout(()=>input.focus(),100);
+  btn.addEventListener("click",check);
+  input.addEventListener("keydown",e=>{if(e.key==="Enter")check();});
+})();
+</script>
+
+</body>
+</html>
