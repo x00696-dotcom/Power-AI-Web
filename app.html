@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Power AI V05 Secure</title>
+<title>Power AI v1.3 - Online 2nd Source + EXP SOP</title>
 <style>
 :root{
   --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#667085; --line:#d9dee8;
@@ -14,8 +14,12 @@
 header{background:#111827;color:white;padding:18px 24px}
 header .brand{font-size:20px;font-weight:700}
 header .sub{opacity:.75;margin-top:4px;font-size:13px}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:18px;max-width:1200px;margin:0 auto}
+.sop-download{display:inline-flex;align-items:center;gap:7px;text-decoration:none;background:#fff;color:#17324d;border:1px solid rgba(255,255,255,.35);border-radius:10px;padding:9px 13px;font-weight:800;font-size:13px;white-space:nowrap}
+.sop-download:hover{background:#eef2ff;color:#315efb}
+@media(max-width:700px){.header-row{align-items:flex-start}.sop-download{font-size:12px;padding:8px 10px}}
 main{max-width:1200px;margin:24px auto;padding:0 16px 60px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
 .feature{min-height:145px;cursor:pointer}.feature.active{border:2px solid var(--accent)}
 h1,h2,h3{margin-top:0}.muted{color:var(--muted)}
@@ -57,6 +61,7 @@ th{background:#f7f8fb;position:sticky;top:0}
 .dsbtn:hover{text-decoration:underline}
 .rulelist{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
 .rulechip{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:5px 8px;background:#fff}
+.online-status{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.provider-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;background:#fff}.provider-chip.ok{background:var(--goodbg);color:var(--good);border-color:#bde6ce}.provider-chip.off{background:#f7f8fb;color:var(--muted)}.provider-chip.err{background:var(--badbg);color:var(--bad);border-color:#f4c7c3}.cross-alert{margin-top:12px;padding:12px 14px;border-radius:10px;background:#fff7db;border:1px solid #f1d989;color:#7a5500;line-height:1.55}.cross-loading{display:inline-flex;gap:8px;align-items:center}.spinner{width:15px;height:15px;border:2px solid #cbd5e1;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.specchips{display:flex;flex-wrap:wrap;gap:5px}.specchip{font-size:11px;border-radius:7px;padding:4px 6px;background:#f1f5f9;color:#334155;max-width:260px;white-space:normal}
 .progressbar{height:8px;background:#e9edf4;border-radius:999px;overflow:hidden;margin-top:8px}.progressbar>div{height:100%;background:var(--accent);width:0%}
 .module{display:none}.module.active{display:block}
 .checks{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
@@ -73,7 +78,12 @@ th{background:#f7f8fb;position:sticky;top:0}
 #passError{min-height:20px;margin-top:10px;font-size:13px;color:#b42318;font-weight:700}
 .pass-note{margin-top:18px;padding-top:14px;border-top:1px solid #edf0f4;color:#98a2b3;font-size:12px}.pass-locked{overflow:hidden}
 
+
+.sens-rule{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.sens-rule>div{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}.sens-rule b{display:block;margin-bottom:5px}.sens-note{padding:12px 14px;border-radius:10px;background:#fff7db;color:#7a5500;border:1px solid #f1d989;margin-top:12px;line-height:1.55}.sens-good{padding:12px 14px;border-radius:10px;background:#e9f8f0;color:#087443;border:1px solid #bde6ce;margin-top:12px;line-height:1.55}.sens-table td{white-space:normal;vertical-align:top}.sens-table th{white-space:nowrap}.sens-code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px}@media(max-width:900px){.sens-rule{grid-template-columns:1fr 1fr}}
+
 </style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 </head>
 <body>
 <div id="passGate" aria-modal="true" role="dialog">
@@ -90,8 +100,13 @@ th{background:#f7f8fb;position:sticky;top:0}
 </div>
 
 <header>
-  <div class="brand">POWER AI</div>
-  <div class="sub">Power Design Review Platform · v0.5 + Passphrase</div>
+  <div class="header-row">
+    <div>
+      <div class="brand">POWER AI</div>
+      <div class="sub">Power Design Review Platform · v1.3 · Online 2nd Source + EXP SOP</div>
+    </div>
+    <a class="sop-download" href="PowerAI_EXP_Export_SOP.pdf" download>📘 EXP 匯出 SOP</a>
+  </div>
 </header>
 
 <main>
@@ -104,12 +119,17 @@ th{background:#f7f8fb;position:sticky;top:0}
     <div class="card feature" data-module="crossref">
       <span class="badge good">可使用</span>
       <h3 style="margin-top:10px">🔎 Power IC 替代料</h3>
-      <div class="muted">輸入 IC 型號 → 規格比對 → 相似度 → 替代類型 → 市場行情。</div>
+      <div class="muted">輸入任意 IC 型號 → 即時網路搜尋 → 規格比對 → 2nd Source 排名。</div>
     </div>
     <div class="card feature" data-module="review">
       <span class="badge good">可使用</span>
       <h3 style="margin-top:10px">🧠 線路 AI Review</h3>
       <div class="muted">上傳 Allegro EXP + IC Datasheet，可對陌生 Power IC 建立通用檢查規則。</div>
+    </div>
+    <div class="card feature" data-module="sensitive">
+      <span class="badge good">NEW</span>
+      <h3 style="margin-top:10px">🎯 No Test Point Review</h3>
+      <div class="muted">EXP → PU Pin / Net → 敏感訊號 No-Test-Point Review → 詳細 Excel 給 Layout。</div>
     </div>
   </div>
 
@@ -119,6 +139,7 @@ th{background:#f7f8fb;position:sticky;top:0}
       <p class="muted">公司規則：MLCC 額定耐壓至少保留 <b>20% Margin</b>。</p>
       <div class="upload">
         <div><b>請上傳 Allegro X 23.1 匯出的 .EXP 檔</b></div>
+        <div class="small" style="margin-top:5px"><a href="PowerAI_EXP_Export_SOP.pdf" download>不知道如何產出 EXP？下載 SOP</a></div>
         <input id="fileInput" type="file" accept=".EXP,.exp,text/plain" />
         <div class="muted" id="fileStatus">尚未選擇檔案</div>
       </div>
@@ -155,54 +176,66 @@ th{background:#f7f8fb;position:sticky;top:0}
 
   <div id="crossref" class="module">
     <section class="card section">
-      <h2>Power IC Cross Reference</h2>
-      <p class="muted">目前先以專案常見料號建立測試資料。輸入型號後可查看替代料、價格與官方 Datasheet。</p>
-      <div class="searchrow">
-        <input id="pnInput" type="text" value="SY6969C" placeholder="例如 SY6969C、BQ25710、BQ25720" />
-        <button id="pnSearch" class="primary" type="button">尋找替代料</button>
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:start;flex-wrap:wrap">
+        <div>
+          <span class="badge good">WEB-FIRST</span>
+          <h2 style="margin:10px 0 4px">AI Online 2nd Source Finder</h2>
+          <p class="muted" style="margin:0">不使用內建 IC 資料庫。輸入任意 MPN，Render 後端即時查詢 Nexar/Octopart 與 Mouser，再依功能、Category、Package 與公開規格排序候選。</p>
+        </div>
+        <div class="small muted" style="text-align:right">Pinout 未經 Datasheet 深度比對前<br><b>不會宣稱 P2P / Drop-in</b></div>
+      </div>
+      <div class="searchrow" style="margin-top:16px">
+        <input id="pnInput" type="text" value="SY6969CQFQ" placeholder="輸入任意 Manufacturer Part Number，例如 TPS55288、SY6969CQFQ" />
+        <button id="pnSearch" class="primary" type="button">🌐 Online Search</button>
+      </div>
+      <div id="providerStatus" class="online-status">
+        <span class="provider-chip off">正在檢查線上資料源…</span>
       </div>
       <div class="checks">
+        <span class="checkpill">✓ 無本地 IC DB</span>
+        <span class="checkpill">✓ Similar Parts</span>
         <span class="checkpill">✓ 規格相似度</span>
-        <span class="checkpill">✓ Package / Pin 評估</span>
-        <span class="checkpill">✓ 生命週期</span>
-        <span class="checkpill">✓ 公開市場價格</span>
-        <span class="checkpill">✓ 官方 Datasheet 連結</span>
+        <span class="checkpill">✓ Package 評估</span>
+        <span class="checkpill">✓ Lifecycle / Stock / Price</span>
+        <span class="checkpill">✓ Datasheet Link</span>
       </div>
-      <div class="note">v0.3 為可操作原型；目前內建已驗證的測試資料。正式上線版會接 Manufacturer / Distributor API，才能搜尋任意料號並取得即時價格與官方文件。</div>
+      <div class="note">最佳模式：Nexar 找功能/規格相似料，Mouser 補 Datasheet、Lifecycle、庫存與價格。只設定其中一個 Provider 也能搜尋。</div>
+      <div id="crossError" class="cross-alert hidden"></div>
     </section>
 
     <section id="sourceCard" class="card section hidden">
       <div style="display:flex;justify-content:space-between;gap:12px;align-items:start;flex-wrap:wrap">
         <div>
-          <span class="badge good">Source IC</span>
+          <span class="badge good">Original IC · Online</span>
           <h2 id="srcName" style="margin:10px 0 4px"></h2>
           <div id="srcDesc" class="muted"></div>
         </div>
         <div style="text-align:right">
           <div class="badge info" id="srcStatus"></div>
-          <div style="margin-top:10px"><a id="srcDatasheet" class="dsbtn hidden" target="_blank" rel="noopener">📄 官方 Datasheet</a></div>
+          <div style="margin-top:10px"><a id="srcDatasheet" class="dsbtn hidden" target="_blank" rel="noopener">📄 Datasheet</a></div>
         </div>
       </div>
       <div id="specGrid" class="specgrid"></div>
+      <div id="sourceProviderNote" class="note"></div>
     </section>
 
     <section id="candidateSection" class="card section hidden">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
         <div>
-          <h2 style="margin-bottom:4px">替代料候選</h2>
-          <div class="muted">相似度不是「可直接換料」的保證；Pin / Register / Layout 仍會分開標示。</div>
+          <h2 style="margin-bottom:4px">Online 2nd Source Candidates</h2>
+          <div class="muted">排名是候選優先順序，不等同於可直接換料。Pinout 欄位在沒有 Datasheet 證據時固定顯示「Not Verified」。</div>
         </div>
         <button id="crossCsv" class="secondary" type="button">下載比較報告</button>
       </div>
       <div class="tablewrap" style="margin-top:12px">
-        <table>
+        <table style="min-width:1550px">
           <thead>
-            <tr><th>排名</th><th>Part Number</th><th>廠牌</th><th>相似度</th><th>分類</th><th>VIN</th><th>Cells</th><th>Charge Current</th><th>Interface</th><th>Package</th><th>公開價格</th><th>Datasheet</th><th>工程結論</th></tr>
+            <tr><th>排名</th><th>Part Number</th><th>廠牌</th><th>Match</th><th>分類</th><th>Category</th><th>Package</th><th>Key Specs</th><th>Pinout</th><th>Lifecycle</th><th>Stock</th><th>公開價格</th><th>Datasheet</th><th>資料源</th><th>工程結論</th></tr>
           </thead>
           <tbody id="candBody"></tbody>
         </table>
       </div>
-      <div class="note">價格為原型建立時可查到的授權通路公開價格，實際公司議價 / RFQ 價格可能不同。Datasheet 優先使用 IC 原廠官方連結。</div>
+      <div class="note">Online 結果依第三方元件資料庫當下可取得資訊產生；最終 AVL / 2nd Source 核准仍應以原廠 Datasheet、樣品驗證與公司 qualification 流程為準。</div>
     </section>
   </div>
 
@@ -273,6 +306,45 @@ th{background:#f7f8fb;position:sticky;top:0}
       </div>
     </section>
   </div>
+
+  <div id="sensitive" class="module">
+    <section class="card section">
+      <h2>No Test Point / Sensitive Net Review</h2>
+      <p class="muted">上傳 Allegro EXP，系統只審查 <b>實裝且 RefDes 以 PU 開頭</b>的 IC。依 PU Pin Name、Net Name 與周圍元件連線，整理「不建議增加 Test Point」的敏感訊號，提供給 Layout 人員。</p>
+      <div class="upload"><div><b>上傳 Allegro X 23.1 .EXP</b></div><div class="small" style="margin-top:5px"><a href="PowerAI_EXP_Export_SOP.pdf" download>不知道如何產出 EXP？下載 SOP</a></div><input id="sensFileInput" type="file" accept=".EXP,.exp,text/plain" /><div class="muted" id="sensFileStatus">尚未選擇 EXP</div></div>
+      <div class="sens-rule">
+        <div><b>NO TP · High</b><span class="muted small">FB / VSENSE / SENSE / ISEN / TSEN / CS / ACP / ACN / SRP / SRN / ILIM / COMP / PWM / SVD / SVC / SVTI / SVTO / VREF…</span></div>
+        <div><b>REVIEW · Medium</b><span class="muted small">IMON / IAC / IBAT / PSYS / Gate Drive / BOOT / PHASE 等，若無明確 debug 需求，建議避免增加獨立 Test Point。</span></div>
+        <div><b>Existing TP Conflict</b><span class="muted small">敏感 Net 上若已存在 PTxxxx / TPxxxx，報告直接標 Conflict。</span></div>
+        <div><b>PU Only</b><span class="muted small">只聚焦 Power IC，避免報告被一般邏輯 IC 訊號淹沒。</span></div>
+      </div>
+      <div class="sens-note"><b>判斷邊界：</b>EXP 能證明 Pin / Net / 元件連接，但通常不能直接證明 IC Pin 的真正 Absolute Max。因此「低耐壓 / 敏感」是依 Pin 功能做保守分類；若未來搭配 Datasheet，可再加入 Pin 耐壓作第二層驗證。</div>
+    </section>
+    <section id="sensResults" class="hidden">
+      <div class="metricrow">
+        <div class="metric"><span class="muted">PU IC</span><b id="sensMPu">0</b></div>
+        <div class="metric"><span class="muted">No-TP / Review</span><b id="sensMNoTp">0</b></div>
+        <div class="metric"><span class="muted">TP Conflict</span><b id="sensMConflict">0</b></div>
+      </div>
+      <div class="card section">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+          <div><h2 style="margin-bottom:4px">Layout 重點摘要</h2><div class="muted">HIGH = 建議直接禁止獨立 TP；MEDIUM = 若沒有明確測試需求，建議不放 TP。</div></div>
+          <button id="sensExcelBtn" class="primary" type="button">下載 Layout No-TP Excel</button>
+        </div>
+        <div id="sensTopSummary" class="sens-good"></div>
+      </div>
+      <div class="card section">
+        <h2>No Test Point / Sensitive Net</h2>
+        <div class="tablewrap">
+          <table class="sens-table" style="min-width:1200px">
+            <thead><tr><th>Action</th><th>Confidence</th><th>PU / IC</th><th>Pin</th><th>Net</th><th>Category</th><th>Existing TP</th><th>Connected Parts</th><th>Layout Instruction</th></tr></thead>
+            <tbody id="sensNoTpBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
 </main>
 
 <script>
@@ -324,68 +396,97 @@ function exportMlcc(){
   mlccState.results.forEach(r=>rows.push([r.status,r.ref,r.value,r.mfg,r.mpn,r.n1,r.v1??'',r.n2,r.v2??'',r.stress??'',r.rated,r.usage?.toFixed(1)??'',r.reason]));downloadCsv('MLCC_Voltage_Check_Report.csv',rows);
 }
 
-const db={
-  SY6969C:{
-    name:'SY6969C / SY20779CQFQ',mfr:'Silergy',status:'Production',datasheet:'https://us1.silergy.com/download/downloadFile?ftype=note&id=5305&type=product',
-    desc:'Multi-Cell Synchronous Buck-Boost Battery Charger Controller with NVDC Power Path Management',
-    vin:'3.5–25 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'QFN 4×4-32',topology:'Buck-Boost',
-    candidates:[
-      {pn:'BQ25710RSNR',mfr:'Texas Instruments',datasheet:'https://www.ti.com/lit/ds/symlink/bq25710.pdf',score:97,type:'高相似 / P2P 候選',vin:'3.5–24 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'WQFN 4×4-32',price:'NT$150 @1 / NT$89.2 @500',stock:'1,833–2,335',result:'最優先驗證；Pin / FW register 仍需正式比對'},
-      {pn:'BQ25720RSNR',mfr:'Texas Instruments',datasheet:'https://www.ti.com/lit/ds/symlink/bq25720.pdf',score:94,type:'P2P 系列候選',vin:'3.5–26 V',cells:'1–4',current:'16.2 A',iface:'SMBus',pkg:'WQFN 4×4-32',price:'NT$150.57 @1 / NT$86.76 @1k',stock:'約 2,600',result:'功能更強；與 BQ25710 P2P，但需確認 FW 差異'},
-      {pn:'MP2760GVT',mfr:'Monolithic Power Systems',datasheet:'https://www.monolithicpower.com/en/products/battery-management/chargers/3-series-cell-chargers/mp2760.html',score:78,type:'Functional Equivalent',vin:'4–22 V',cells:'1–4',current:'6 A',iface:'I²C / SMBus',pkg:'TQFN 4×5-30',price:'NT$154–158 @1 / NT$89.17 @1k',stock:'依版本約 45–627',result:'功能相近，但 Package / Pin 不同，需要改板'},
-      {pn:'RT9478M',mfr:'Richtek',datasheet:'https://www.richtek.com/assets/product_file/RT9478M/RT9478M_DS-01.pdf',score:74,type:'Functional Equivalent',vin:'最高 24 V 類別',cells:'2–4',current:'—',iface:'SMBus',pkg:'不同系列',price:'需詢價',stock:'需查詢',result:'功能方向相近；非直接替換，需完整設計比對'},
-      {pn:'RT9490',mfr:'Richtek',datasheet:'https://www.richtek.com/assets/product_file/RT9490/RT9490_DS-02.pdf',score:69,type:'Similar Device',vin:'Buck-Boost Charger',cells:'2–4',current:'5 A',iface:'—',pkg:'WL-CSP 系列',price:'需查詢',stock:'官方頁顯示 DigiKey 有貨',result:'用途相近但架構與封裝差異較大'}
-    ]
-  },
-  SY20779C:null,
-  BQ25710:{
-    name:'BQ25710',mfr:'Texas Instruments',status:'Active',datasheet:'https://www.ti.com/lit/ds/symlink/bq25710.pdf',
-    desc:'SMBus 1–4 cell NVDC Buck-Boost Battery Charge Controller',
-    vin:'3.5–24 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'WQFN 4×4-32',topology:'Buck-Boost',
-    candidates:[
-      {pn:'SY20779CQFQ / SY6969C',mfr:'Silergy',datasheet:'https://us1.silergy.com/download/downloadFile?ftype=note&id=5305&type=product',score:97,type:'高相似 / P2P 候選',vin:'3.5–25 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'QFN 4×4-32',price:'需詢價',stock:'Production',result:'高度相近；建議正式核對 register / timing 後替換'},
-      {pn:'BQ25720RSNR',mfr:'Texas Instruments',datasheet:'https://www.ti.com/lit/ds/symlink/bq25720.pdf',score:96,type:'Pin-to-Pin',vin:'3.5–26 V',cells:'1–4',current:'16.2 A',iface:'SMBus',pkg:'WQFN 4×4-32',price:'NT$150.57 @1 / NT$86.76 @1k',stock:'約 2,600',result:'TI 官方確認 P2P；仍需確認韌體設定差異'},
-      {pn:'MP2760GVT',mfr:'Monolithic Power Systems',datasheet:'https://www.monolithicpower.com/en/products/battery-management/chargers/3-series-cell-chargers/mp2760.html',score:78,type:'Functional Equivalent',vin:'4–22 V',cells:'1–4',current:'6 A',iface:'I²C / SMBus',pkg:'TQFN 4×5-30',price:'NT$154–158 @1 / NT$89.17 @1k',stock:'依版本約 45–627',result:'需改板'}
-    ]
-  },
-  BQ25720:{
-    name:'BQ25720',mfr:'Texas Instruments',status:'Active',datasheet:'https://www.ti.com/lit/ds/symlink/bq25720.pdf',
-    desc:'SMBus 1–4 cell NVDC Buck-Boost Battery Charge Controller with USB-C PD OTG',
-    vin:'3.5–26 V',cells:'1–4',current:'16.2 A',iface:'SMBus',pkg:'WQFN 4×4-32',topology:'Buck-Boost',
-    candidates:[
-      {pn:'BQ25710RSNR',mfr:'Texas Instruments',datasheet:'https://www.ti.com/lit/ds/symlink/bq25710.pdf',score:94,type:'Pin-to-Pin family',vin:'3.5–24 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'WQFN 4×4-32',price:'NT$150 @1 / NT$89.2 @500',stock:'1,833–2,335',result:'P2P family，但電流能力與功能較低'},
-      {pn:'SY20779CQFQ / SY6969C',mfr:'Silergy',datasheet:'https://us1.silergy.com/download/downloadFile?ftype=note&id=5305&type=product',score:91,type:'高相似候選',vin:'3.5–25 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'QFN 4×4-32',price:'需詢價',stock:'Production',result:'高度相似，但能力低於 BQ25720；需完整驗證'}
-    ]
-  },
-  MP2760:{
-    name:'MP2760',mfr:'Monolithic Power Systems',status:'Active (部分 suffix 例外)',datasheet:'https://www.monolithicpower.com/en/products/battery-management/chargers/3-series-cell-chargers/mp2760.html',
-    desc:'1-Cell to 4-Cell Buck-Boost Charger with NVDC Power Path Management',
-    vin:'4–22 V',cells:'1–4',current:'6 A',iface:'I²C / SMBus',pkg:'TQFN 4×5-30',topology:'Buck-Boost',
-    candidates:[
-      {pn:'BQ25710RSNR',mfr:'Texas Instruments',datasheet:'https://www.ti.com/lit/ds/symlink/bq25710.pdf',score:78,type:'Functional Equivalent',vin:'3.5–24 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'WQFN 4×4-32',price:'NT$150 @1',stock:'1,833–2,335',result:'功能相近，但不可直接替換'},
-      {pn:'SY20779CQFQ / SY6969C',mfr:'Silergy',datasheet:'https://us1.silergy.com/download/downloadFile?ftype=note&id=5305&type=product',score:77,type:'Functional Equivalent',vin:'3.5–25 V',cells:'1–4',current:'8.128 A',iface:'SMBus',pkg:'QFN 4×4-32',price:'需詢價',stock:'Production',result:'功能相近，但不可直接替換'}
-    ]
-  }
-};
-db.SY20779C=db.SY6969C;
+let crossState=null;
 
-function normalizePn(v){let x=v.trim().toUpperCase().replace(/\s+/g,'');if(x.startsWith('SY6969'))return'SY6969C';if(x.startsWith('SY20779'))return'SY20779C';if(x.startsWith('BQ25710'))return'BQ25710';if(x.startsWith('BQ25720'))return'BQ25720';if(x.startsWith('MP2760'))return'MP2760';return x;}
-function runCross(){
-  const key=normalizePn(pnInput.value),src=db[key];
-  if(!src){sourceCard.classList.remove('hidden');candidateSection.classList.add('hidden');srcName.textContent=pnInput.value||'未輸入';srcDesc.textContent='v0.2 的本機資料庫還沒有這顆料。正式上線版會改成連線查詢官方 Datasheet / Distributor API。';srcStatus.textContent='尚未建檔';srcDatasheet.classList.add('hidden');srcDatasheet.removeAttribute('href');specGrid.innerHTML='';return;}
-  srcName.textContent=src.name;srcDesc.textContent=src.desc;srcStatus.textContent=src.mfr+' · '+src.status;if(src.datasheet){srcDatasheet.href=src.datasheet;srcDatasheet.classList.remove('hidden');}else{srcDatasheet.classList.add('hidden');srcDatasheet.removeAttribute('href');}
-  const specs=[['Topology',src.topology],['VIN',src.vin],['Battery Cells',src.cells],['Charge Current',src.current],['Interface',src.iface],['Package',src.pkg]];
-  specGrid.innerHTML=specs.map(([k,v])=>`<div class="speccell"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+function crossBadgeClass(type){
+  const t=String(type||'').toLowerCase();
+  if(t.includes('strong'))return'good';
+  if(t.includes('functional'))return'warn';
+  return'info';
+}
+function renderProviderStatus(data){
+  const el=document.getElementById('providerStatus');if(!el)return;
+  const p=data?.providers||{};
+  const rows=[
+    ['Nexar / Octopart',!!p.nexar],
+    ['Mouser',!!p.mouser]
+  ];
+  el.innerHTML=rows.map(([n,on])=>`<span class="provider-chip ${on?'ok':'off'}">${on?'●':'○'} ${n} · ${on?'Ready':'Not configured'}</span>`).join('')+
+    `<span class="provider-chip ${data?.online?'ok':'err'}">${data?.online?'✓ Online search ready':'! Add API credential in Render'}</span>`;
+}
+async function loadProviderStatus(){
+  try{
+    const r=await fetch('/api/provider-status',{cache:'no-store'});
+    if(!r.ok)throw new Error('status '+r.status);
+    renderProviderStatus(await r.json());
+  }catch(e){
+    const el=document.getElementById('providerStatus');
+    if(el)el.innerHTML='<span class="provider-chip err">此功能需要部署在 Render 後端；直接開本機 HTML 無法執行 Online Search</span>';
+  }
+}
+
+async function runCross(){
+  const input=(pnInput.value||'').trim();
+  const errBox=document.getElementById('crossError');
+  if(!input){errBox.textContent='請先輸入 Manufacturer Part Number。';errBox.classList.remove('hidden');return;}
+  errBox.classList.add('hidden');
+  pnSearch.disabled=true;
+  const oldText=pnSearch.innerHTML;
+  pnSearch.innerHTML='<span class="cross-loading"><span class="spinner"></span>Searching…</span>';
+  sourceCard.classList.add('hidden');candidateSection.classList.add('hidden');
+  try{
+    const r=await fetch('/api/crossref',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mpn:input})
+    });
+    const data=await r.json().catch(()=>({error:'Backend returned invalid JSON'}));
+    if(!r.ok)throw new Error(data.error||data.message||`HTTP ${r.status}`);
+    crossState=data;
+    renderCrossResult(data);
+    if(data.providers)renderProviderStatus({providers:data.providers,online:true});
+  }catch(e){
+    errBox.innerHTML=`<b>Online 2nd Source 搜尋失敗：</b>${esc(e.message)}<br><span class="small">若畫面顯示 Provider 未設定，請在 Render Environment 加入 Nexar 或 Mouser API credential 後重新 Deploy。</span>`;
+    errBox.classList.remove('hidden');
+  }finally{
+    pnSearch.disabled=false;pnSearch.innerHTML=oldText;
+  }
+}
+
+function renderCrossResult(data){
+  const src=data.source||{};
+  srcName.textContent=src.mpn||pnInput.value;
+  srcDesc.textContent=src.description||'線上資料源未提供 Description';
+  srcStatus.textContent=[src.manufacturer,src.lifecycle].filter(Boolean).join(' · ')||'Online result';
+  if(src.datasheet){srcDatasheet.href=src.datasheet;srcDatasheet.classList.remove('hidden');}
+  else{srcDatasheet.classList.add('hidden');srcDatasheet.removeAttribute('href');}
+  const specs=[];
+  if(src.category)specs.push(['Category',src.category]);
+  if(src.package)specs.push(['Package',src.package]);
+  (src.key_specs||[]).slice(0,6).forEach(x=>specs.push([x.name,x.value]));
+  if(src.stock)specs.push(['Availability',src.stock]);
+  specGrid.innerHTML=specs.length?specs.map(([k,v])=>`<div class="speccell"><div class="k">${esc(k)}</div><div class="v">${esc(v||'—')}</div></div>`).join(''):'<div class="notice">此料號可取得的結構化規格有限；候選仍依線上相似料/描述資料排序。</div>';
+  document.getElementById('sourceProviderNote').textContent='Source: '+(data.source_providers||[]).join(' + ')+(data.search_mode?` · ${data.search_mode}`:'');
   sourceCard.classList.remove('hidden');
+
   candBody.innerHTML='';
-  src.candidates.sort((a,b)=>b.score-a.score).forEach((c,i)=>{const tr=document.createElement('tr');if(i===0)tr.className='rank1';const t=c.type.includes('Pin')||c.type.includes('P2P')?'good':c.type.includes('Functional')?'warn':'info';tr.innerHTML=`<td>${i+1}</td><td><b>${c.pn}</b></td><td>${c.mfr}</td><td><span class="score">${c.score}%</span></td><td><span class="badge ${t}">${c.type}</span></td><td>${c.vin}</td><td>${c.cells}</td><td>${c.current}</td><td>${c.iface}</td><td>${c.pkg}</td><td>${c.price}</td><td>${c.datasheet?`<a class="dsbtn" href="${c.datasheet}" target="_blank" rel="noopener">📄 開啟</a>`:'—'}</td><td>${c.result}</td>`;candBody.appendChild(tr);});
+  const cs=data.candidates||[];
+  cs.forEach((c,i)=>{
+    const tr=document.createElement('tr');if(i===0)tr.className='rank1';
+    const t=crossBadgeClass(c.type);
+    const specHtml=(c.key_specs||[]).slice(0,5).map(x=>`<span class="specchip"><b>${esc(x.name)}:</b> ${esc(x.value)}</span>`).join('');
+    tr.innerHTML=`<td>${i+1}</td><td><b>${esc(c.mpn)}</b></td><td>${esc(c.manufacturer||'—')}</td><td><span class="score">${Number(c.score||0).toFixed(0)}%</span></td><td><span class="badge ${t}">${esc(c.type||'Candidate')}</span></td><td>${esc(c.category||'—')}</td><td>${esc(c.package||'—')}</td><td><div class="specchips">${specHtml||'—'}</div></td><td><span class="badge info">${esc(c.pinout||'Not Verified')}</span></td><td>${esc(c.lifecycle||'—')}</td><td>${esc(c.stock||'—')}</td><td>${esc(c.price||'—')}</td><td>${c.datasheet?`<a class="dsbtn" href="${escAttr(c.datasheet)}" target="_blank" rel="noopener">📄 開啟</a>`:'—'}</td><td>${esc((c.providers||[]).join(' + ')||'Online')}</td><td>${esc(c.result||'需工程驗證')}</td>`;
+    candBody.appendChild(tr);
+  });
+  if(!cs.length)candBody.innerHTML='<tr><td colspan="15"><div class="notice">已找到 Original IC，但目前線上資料源沒有回傳可用的 2nd Source 候選。可嘗試完整 MPN 或確認 API plan 是否包含 Similar Parts / Specs。</div></td></tr>';
   candidateSection.classList.remove('hidden');
 }
+
 function exportCross(){
-  const key=normalizePn(pnInput.value),src=db[key];if(!src)return;
-  const rows=[['Source IC',src.name],[],['Rank','Part Number','Manufacturer','Similarity %','Type','VIN','Cells','Charge Current','Interface','Package','Public Price','Datasheet URL','Engineering Result']];
-  src.candidates.sort((a,b)=>b.score-a.score).forEach((c,i)=>rows.push([i+1,c.pn,c.mfr,c.score,c.type,c.vin,c.cells,c.current,c.iface,c.pkg,c.price,c.datasheet||'',c.result]));
-  downloadCsv('Power_IC_Cross_Reference_'+key+'.csv',rows);
+  if(!crossState)return;
+  const src=crossState.source||{};
+  const rows=[['Online 2nd Source Finder'],['Original MPN',src.mpn||''],['Manufacturer',src.manufacturer||''],['Category',src.category||''],['Search Providers',(crossState.source_providers||[]).join(' + ')],[],['Rank','Part Number','Manufacturer','Match %','Type','Category','Package','Pinout','Lifecycle','Stock','Public Price','Datasheet URL','Providers','Engineering Result']];
+  (crossState.candidates||[]).forEach((c,i)=>rows.push([i+1,c.mpn,c.manufacturer||'',c.score||0,c.type||'',c.category||'',c.package||'',c.pinout||'Not Verified',c.lifecycle||'',c.stock||'',c.price||'',c.datasheet||'',(c.providers||[]).join(' + '),c.result||'']));
+  const base=String(src.mpn||'MPN').replace(/[^A-Za-z0-9_\-]+/g,'_');
+  downloadCsv('Online_2nd_Source_'+base+'.csv',rows);
 }
 function downloadCsv(name,rows){const csv='\ufeff'+rows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href);}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}function escAttr(s){return esc(s);}
@@ -1459,7 +1560,7 @@ function exportCircuitReview(){
 document.querySelectorAll('.feature').forEach(x=>x.classList.remove('active'));f.classList.add('active');document.querySelectorAll('.module').forEach(x=>x.classList.remove('active'));document.getElementById(f.dataset.module).classList.add('active');}));
 fileInput.addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;fileStatus.textContent='讀取中：'+file.name;try{const buf=await file.arrayBuffer();const text=new TextDecoder('windows-1252').decode(buf);mlccState.parts=parseEXP(text);mlccState.unknown=new Set();mlccState.parts.forEach(p=>p.nets.forEach(n=>{if(inferVoltage(n)===null)mlccState.unknown.add(n);}));fileStatus.textContent=`已讀取 ${file.name}，找到 ${mlccState.parts.length} 顆實裝 MLCC。`;renderUnknown();summarySection.classList.add('hidden');}catch(err){fileStatus.textContent='讀取失敗：'+err.message;}});
 runBtn.addEventListener('click',calcResults);csvBtn.addEventListener('click',exportMlcc);
-pnSearch.addEventListener('click',runCross);pnInput.addEventListener('keydown',e=>{if(e.key==='Enter')runCross();});crossCsv.addEventListener('click',exportCross);
+pnSearch.addEventListener('click',runCross);pnInput.addEventListener('keydown',e=>{if(e.key==='Enter')runCross();});crossCsv.addEventListener('click',exportCross);loadProviderStatus();
 
 
 async function extractPdfText(file){
@@ -1531,6 +1632,372 @@ reviewIcSelect.addEventListener('change',updateReviewIcInfo);
 reviewRunBtn.addEventListener('click',runCircuitReview);
 reviewCsvBtn.addEventListener('click',exportCircuitReview);
 </script>
+
+
+<script>
+(function(){
+  const st={parts:{},partPins:{},netConns:{},pu:[],noTp:[],conflicts:[],allPins:[],fileName:''};
+  const $=id=>document.getElementById(id);
+  const f=$('sensFileInput'); if(!f)return;
+  const status=$('sensFileStatus'),results=$('sensResults'),noBody=$('sensNoTpBody');
+
+  function esc2(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
+  function tsv(line){
+    const out=[];let cur='',q=false;
+    for(let i=0;i<line.length;i++){
+      const ch=line[i];
+      if(ch==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q;}
+      else if(ch==='\t'&&!q){out.push(cur);cur='';}
+      else cur+=ch;
+    }
+    out.push(cur);return out;
+  }
+  function parse(text){
+    const lines=text.split(/\r?\n/).filter(Boolean);
+    const hline=lines.find(x=>x.startsWith('"HEADER"'));if(!hline)throw new Error('找不到 EXP HEADER');
+    const h=tsv(hline),ix={};h.forEach((x,i)=>ix[x]=i);
+    const parts={},partPins={},netConns={};
+    for(const line of lines){
+      const c=tsv(line),id=c[0]||'';
+      if(id.startsWith('PARTINST:')){
+        const ref=c[ix['Part Reference']]||'',sp=id.split(':');
+        parts[ref]={ref,value:c[ix['Value']]||'',bom:c[ix['BOM']]||'',datasheet:c[ix['Datasheet']]||'',desc:c[ix['Description']]||'',mfg:c[ix['Mfg']]||'',mpn:c[ix['Mfg Part Number']]||'',type:c[ix['Part Type']]||'',subsystem:c[ix['Sub System']]||'',page:sp.length>2?sp[2]:''};
+      }else if(id.startsWith('PININST:')){
+        const raw=c[1]||'',j=raw.indexOf(':'),ref=j>=0?raw.slice(0,j):raw,pname=j>=0?raw.slice(j+1):'';
+        const p={ref,pin:pname,net:c[ix['Net Name']]||'',num:c[ix['Number']]||'',electrical:c[ix['Type']]||'',nc:c[ix['Is No Connect']]||''};
+        (partPins[ref]||(partPins[ref]=[])).push(p);
+        if(p.net&&p.net!=='<null>')(netConns[p.net]||(netConns[p.net]=[])).push(p);
+      }
+    }
+    return {parts,partPins,netConns};
+  }
+  function installed(ref){return ((st.parts[ref]?.bom)||'').toUpperCase()!=='NI';}
+
+  function noTp(pin,net){
+    const p=String(pin||'').toUpperCase().replace(/\s/g,''),n=String(net||'').toUpperCase();
+    const strong=[
+      ['FB','Feedback / regulation'],['VSENSE','Voltage sense'],['SENSE','Sense'],['SNS','Sense'],
+      ['ISEN','Current sense'],['TSEN','Thermal sense'],['CSP','Current sense'],['CSN','Current sense'],
+      ['ACP','Adapter current sense'],['ACN','Adapter current sense'],['SRP','Battery current sense'],['SRN','Battery current sense'],
+      ['ILIM','Current-limit programming'],['COMP','Compensation'],['CMP','Comparator / compensation'],
+      ['PWM','PWM control'],['SVD','SVI sensitive'],['SVC','SVI sensitive'],['SVTI','SVI sensitive'],['SVTO','SVI sensitive'],
+      ['VREF','Reference']
+    ];
+    for(const [kw,cat] of strong){
+      if(p.includes(kw)||n.includes(kw))
+        return{action:'NO TP',confidence:'HIGH',category:cat,reason:'敏感/低電壓控制或感測節點；避免 Test Point 引入浮壓、ESD、漏電、stub 與寄生電容風險。'};
+    }
+    if(/^CS(?:\d+)?[+\-PN]?$/.test(p)||/(^|_)CS(?:\d+)?([+\-PN]?|$)/.test(n))
+      return{action:'NO TP',confidence:'HIGH',category:'Current sense',reason:'CS 類低電平感測節點，不建議增加獨立 Test Point。'};
+
+    const med=[
+      ['IMON','Analog monitor'],['IAC','Analog current monitor'],['IBAT','Analog current monitor'],['PSYS','Analog power monitor'],
+      ['HIDRV','Gate drive'],['LODRV','Gate drive'],['UGATE','Gate drive'],['LGATE','Gate drive'],['BATDRV','Gate drive'],
+      ['BOOT','Bootstrap'],['BTST','Bootstrap'],['PHASE','Switching node/control']
+    ];
+    for(const [kw,cat] of med){
+      if(p.includes(kw)||n.includes(kw))
+        return{action:'REVIEW',confidence:'MEDIUM',category:cat,reason:'此節點對 parasitic / noise / ESD 較敏感；除非有明確 debug / ICT / FCT 需求，建議不要增加獨立 Test Point。'};
+    }
+    return null;
+  }
+
+  function build(){
+    const tpByNet={};
+    for(const [ref,info] of Object.entries(st.parts)){
+      if(!(ref.toUpperCase().startsWith('PT')||ref.toUpperCase().startsWith('TP')||/PROBE/i.test(info.type||'')||/TEST_POINT/i.test(info.desc||'')))continue;
+      for(const p of st.partPins[ref]||[])if(p.net&&p.net!=='<null>')(tpByNet[p.net]||(tpByNet[p.net]=[])).push(ref);
+    }
+
+    st.pu=Object.keys(st.parts).filter(r=>r.toUpperCase().startsWith('PU')&&installed(r));
+    st.noTp=[];st.conflicts=[];st.allPins=[];
+
+    for(const pu of st.pu){
+      const info=st.parts[pu],ps=(st.partPins[pu]||[]).slice().sort((a,b)=>(Number(a.num)||999)-(Number(b.num)||999));
+      for(const p of ps){
+        const excludedSignal=!p.net||p.net==='<null>'||/(^|_)GND($|_)/i.test(p.net)||/^NC\d*$/i.test(p.pin);
+        const rule=excludedSignal?null:noTp(p.pin,p.net);
+        const tps=(tpByNet[p.net]||[]).join(', ');
+        const refs=[...new Set((st.netConns[p.net]||[]).map(x=>x.ref).filter(r=>r!==pu&&st.parts[r]&&installed(r)))].sort();
+        const connected=refs.slice(0,12).map(r=>`${r}(${st.parts[r].value||''})`).join(', ');
+
+        st.allPins.push([
+          pu,info.mpn||info.value,info.page,p.pin,p.num,p.net,p.electrical,
+          rule?.action||'Normal / Not flagged',rule?.confidence||'—',rule?.category||'—',
+          tps||'None',connected,info.datasheet
+        ]);
+
+        if(rule){
+          const action=tps?'CONFLICT':rule.action;
+          const inst=rule.action==='NO TP'
+            ? 'Do NOT add standalone Test Point. 若製造/除錯強制需要量測，優先使用元件 Pad、既有 Connector 或經 Power Engineer 核准的低寄生量測方式。'
+            : 'Avoid standalone Test Point unless debug / ICT / FCT requirement is explicit and reviewed by Power Engineer.';
+          const row={action,confidence:rule.confidence,pu,ic:info.mpn||info.value,page:info.page,pin:p.pin,pinNo:p.num,net:p.net,electrical:p.electrical,category:rule.category,tp:tps||'None',connected,instruction:inst,reason:rule.reason,datasheet:info.datasheet};
+          st.noTp.push(row);
+          if(tps)st.conflicts.push(['TP CONFLICT',pu,p.pin,p.num,p.net,tps,rule.action,rule.confidence,'敏感 Net 已存在 Test Point；請確認是否必要，若無明確 ICT/FCT/debug 需求建議移除。',info.datasheet]);
+        }
+      }
+    }
+  }
+
+  function badge(a){
+    const c=a==='CONFLICT'?'bad':a==='NO TP'?'warn':'info';
+    return `<span class="badge ${c}">${esc2(a)}</span>`;
+  }
+
+  function render(){
+    $('sensMPu').textContent=st.pu.length;
+    $('sensMNoTp').textContent=st.noTp.length;
+    $('sensMConflict').textContent=st.conflicts.length;
+
+    noBody.innerHTML=st.noTp.map(r=>`<tr>
+      <td>${badge(r.action)}</td>
+      <td>${esc2(r.confidence)}</td>
+      <td><b>${esc2(r.pu)}</b><div class="small muted">${esc2(r.ic)}</div></td>
+      <td><b>${esc2(r.pin)}</b><div class="small muted">Pin ${esc2(r.pinNo)}</div></td>
+      <td class="sens-code"><span class="sens-net-highlight">${esc2(r.net)}</span></td>
+      <td>${esc2(r.category)}</td>
+      <td>${r.tp==='None'?'None':badge('CONFLICT')+' '+esc2(r.tp)}</td>
+      <td class="small">${esc2(r.connected)}</td>
+      <td>${esc2(r.instruction)}</td>
+    </tr>`).join('')||'<tr><td colspan="9">未找到符合 No-TP 規則的 PU Pin。</td></tr>';
+
+    const high=st.noTp.filter(x=>x.confidence==='HIGH').length;
+    const review=st.noTp.filter(x=>x.confidence==='MEDIUM').length;
+    $('sensTopSummary').innerHTML=`<b>本次 EXP：</b>審查 ${st.pu.length} 顆 PU；找到 <b>${high} 個 HIGH No-TP</b>、${review} 個 MEDIUM Review；Existing TP Conflict = <b>${st.conflicts.length}</b>。`;
+
+    results.classList.remove('hidden');
+    results.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function ws(rows,widths){
+    const s=XLSX.utils.aoa_to_sheet(rows);
+    s['!cols']=widths.map(w=>({wch:w}));
+    if(rows.length>1)s['!autofilter']={ref:`A1:${XLSX.utils.encode_col(rows[0].length-1)}${rows.length}`};
+    return s;
+  }
+
+  async function exportXlsx(){
+    if(typeof ExcelJS==='undefined'){
+      alert('Excel 樣式模組尚未載入，請確認瀏覽器可連網後重試。');
+      return;
+    }
+
+    const wb=new ExcelJS.Workbook();
+    wb.creator='Power AI';
+    wb.created=new Date();
+
+    const COLORS={
+      navy:'17324D', white:'FFFFFF', yellow:'FFF2A8', yellowFont:'7A4B00',
+      red:'FECACA', redFont:'991B1B', orange:'FED7AA', orangeFont:'9A3412',
+      blue:'DBEAFE', blueFont:'1E3A8A', gray:'F3F4F6', dark:'111827',
+      green:'DCFCE7', greenFont:'166534', border:'D1D5DB'
+    };
+
+    function headerStyle(row){
+      row.eachCell(cell=>{
+        cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:COLORS.navy}};
+        cell.font={bold:true,color:{argb:COLORS.white},size:11};
+        cell.alignment={vertical:'middle',horizontal:'center',wrapText:true};
+        cell.border={
+          top:{style:'thin',color:{argb:COLORS.border}},
+          left:{style:'thin',color:{argb:COLORS.border}},
+          bottom:{style:'thin',color:{argb:COLORS.border}},
+          right:{style:'thin',color:{argb:COLORS.border}}
+        };
+      });
+      row.height=24;
+    }
+    function bodyBorder(row){
+      row.eachCell(cell=>{
+        cell.alignment={vertical:'top',wrapText:true};
+        cell.border={
+          top:{style:'hair',color:{argb:'E5E7EB'}},
+          bottom:{style:'hair',color:{argb:'E5E7EB'}},
+          left:{style:'hair',color:{argb:'E5E7EB'}},
+          right:{style:'hair',color:{argb:'E5E7EB'}}
+        };
+      });
+    }
+
+    // -------- Layout-first sheet: one row per Net --------
+    const layout=wb.addWorksheet('Layout No-TP List',{views:[{state:'frozen',ySplit:5}]});
+    layout.mergeCells('A1:G1');
+    layout.getCell('A1').value='LAYOUT ACTION — DO NOT ADD TEST POINT';
+    layout.getCell('A1').fill={type:'pattern',pattern:'solid',fgColor:{argb:COLORS.navy}};
+    layout.getCell('A1').font={bold:true,color:{argb:COLORS.white},size:18};
+    layout.getCell('A1').alignment={horizontal:'center',vertical:'middle'};
+    layout.getRow(1).height=32;
+
+    layout.mergeCells('A2:G2');
+    layout.getCell('A2').value='只看「Net Name」即可執行：黃色 = 禁止增加獨立 Test Point；紅色 = 敏感 Net 已存在 Test Point，需 Power Engineer 確認/移除。';
+    layout.getCell('A2').fill={type:'pattern',pattern:'solid',fgColor:{argb:COLORS.blue}};
+    layout.getCell('A2').font={bold:true,color:{argb:COLORS.blueFont},size:11};
+    layout.getCell('A2').alignment={wrapText:true,vertical:'middle'};
+    layout.getRow(2).height=34;
+
+    layout.mergeCells('A3:G3');
+    layout.getCell('A3').value='Layout 主要執行欄位：Net Name。PU / Pin 僅供定位來源；工程分析細節請看後面的 Engineering Detail。';
+    layout.getCell('A3').font={italic:true,color:{argb:'6B7280'},size:10};
+    layout.getCell('A3').alignment={wrapText:true};
+
+    layout.addRow([]);
+    const lh=layout.addRow(['Priority','Net Name','Requirement','Source PU','Pin Name / No.','Existing TP','Layout Note']);
+    headerStyle(lh);
+
+    // Deduplicate HIGH No-TP by Net. Conflicts always stay in the main list.
+    const byNet=new Map();
+    for(const r of st.noTp){
+      if(r.confidence!=='HIGH' && r.action!=='CONFLICT')continue;
+      if(!byNet.has(r.net)){
+        byNet.set(r.net,{net:r.net,conflict:false,pus:new Set(),pins:new Set(),tps:new Set(),cats:new Set()});
+      }
+      const x=byNet.get(r.net);
+      x.conflict=x.conflict||r.action==='CONFLICT';
+      x.pus.add(r.pu);
+      x.pins.add(`${r.pin} (Pin ${r.pinNo})`);
+      if(r.tp&&r.tp!=='None')r.tp.split(',').map(s=>s.trim()).filter(Boolean).forEach(v=>x.tps.add(v));
+      x.cats.add(r.category);
+    }
+
+    const layoutRows=[...byNet.values()].sort((a,b)=>{
+      if(a.conflict!==b.conflict)return a.conflict?-1:1;
+      return a.net.localeCompare(b.net);
+    });
+
+    for(const x of layoutRows){
+      const row=layout.addRow([
+        x.conflict?'P0 CONFLICT':'P1 NO TP',
+        x.net,
+        x.conflict?'Existing TP conflict — REMOVE / REVIEW':'DO NOT ADD TEST POINT',
+        [...x.pus].join(', '),
+        [...x.pins].join(', '),
+        x.tps.size?[...x.tps].join(', '):'None',
+        x.conflict
+          ? '此敏感 Net 已存在 Test Point；請先確認是否為 ICT/FCT 必要需求，否則建議移除。'
+          : 'Layout 請勿新增獨立 Test Point；若必須量測，優先使用元件 Pad 或經 Power Engineer 核准的低寄生量測方式。'
+      ]);
+      bodyBorder(row);
+
+      // Net Name is the visual focal point.
+      const netCell=row.getCell(2);
+      netCell.font={bold:true,size:14,color:{argb:x.conflict?COLORS.redFont:COLORS.yellowFont}};
+      netCell.fill={type:'pattern',pattern:'solid',fgColor:{argb:x.conflict?COLORS.red:COLORS.yellow}};
+      netCell.alignment={vertical:'middle',wrapText:true};
+
+      const req=row.getCell(3);
+      req.font={bold:true,color:{argb:x.conflict?COLORS.redFont:COLORS.orangeFont}};
+      req.fill={type:'pattern',pattern:'solid',fgColor:{argb:x.conflict?COLORS.red:COLORS.orange}};
+
+      row.getCell(1).font={bold:true,color:{argb:x.conflict?COLORS.redFont:COLORS.dark}};
+      if(x.conflict)row.getCell(6).fill={type:'pattern',pattern:'solid',fgColor:{argb:COLORS.red}};
+      row.height=34;
+    }
+
+    layout.autoFilter={from:{row:5,column:1},to:{row:5+layoutRows.length,column:7}};
+    layout.columns=[
+      {width:16},{width:34},{width:30},{width:18},{width:28},{width:20},{width:58}
+    ];
+    layout.getColumn(2).alignment={vertical:'middle',wrapText:true};
+
+    // Optional medium-review sheet so Layout is not distracted by it.
+    const optional=wb.addWorksheet('Optional TP Review',{views:[{state:'frozen',ySplit:4}]});
+    optional.mergeCells('A1:G1');
+    optional.getCell('A1').value='Optional TP Review — Medium Confidence';
+    optional.getCell('A1').fill={type:'pattern',pattern:'solid',fgColor:{argb:COLORS.gray}};
+    optional.getCell('A1').font={bold:true,color:{argb:COLORS.dark},size:14};
+    optional.mergeCells('A2:G2');
+    optional.getCell('A2').value='這些不是硬性禁止；只有在沒有明確 Debug / ICT / FCT 需求時，建議不要額外放 TP。';
+    optional.getCell('A2').alignment={wrapText:true};
+    optional.addRow([]);
+    const oh=optional.addRow(['Net Name','PU','Pin','Category','Existing TP','Recommendation','Reason']);
+    headerStyle(oh);
+    for(const r of st.noTp.filter(x=>x.confidence==='MEDIUM')){
+      const row=optional.addRow([r.net,r.pu,`${r.pin} / ${r.pinNo}`,r.category,r.tp,r.instruction,r.reason]);
+      bodyBorder(row);
+      row.getCell(1).font={bold:true,color:{argb:COLORS.blueFont}};
+      row.getCell(1).fill={type:'pattern',pattern:'solid',fgColor:{argb:COLORS.blue}};
+    }
+    optional.columns=[{width:32},{width:14},{width:22},{width:24},{width:18},{width:58},{width:58}];
+
+    // Engineering detail: preserve full evidence, but place it behind the Layout sheet.
+    const detail=wb.addWorksheet('Engineering Detail',{views:[{state:'frozen',ySplit:2}]});
+    const dh=['Action','Confidence','PU RefDes','IC MPN','Page','Pin Name','Pin No','Net Name','Electrical Type','Category','Existing TP','Connected Components','Layout Instruction','Reason','Datasheet'];
+    const dhr=detail.addRow(dh);headerStyle(dhr);
+    for(const r of st.noTp){
+      const row=detail.addRow([r.action,r.confidence,r.pu,r.ic,r.page,r.pin,r.pinNo,r.net,r.electrical,r.category,r.tp,r.connected,r.instruction,r.reason,r.datasheet]);
+      bodyBorder(row);
+      const nc=row.getCell(8);
+      nc.font={bold:true,color:{argb:r.action==='CONFLICT'?COLORS.redFont:COLORS.yellowFont}};
+      nc.fill={type:'pattern',pattern:'solid',fgColor:{argb:r.action==='CONFLICT'?COLORS.red:COLORS.yellow}};
+    }
+    detail.autoFilter={from:{row:1,column:1},to:{row:1+st.noTp.length,column:15}};
+    detail.columns=[
+      {width:16},{width:12},{width:14},{width:22},{width:28},{width:18},{width:9},{width:32},
+      {width:16},{width:24},{width:18},{width:45},{width:58},{width:58},{width:44}
+    ];
+
+    // Existing TP conflict sheet
+    const conflict=wb.addWorksheet('TP Conflicts',{views:[{state:'frozen',ySplit:2}]});
+    const ch=['Status','PU RefDes','Pin Name','Pin No','Net Name','Existing TP','Sensitive Action','Confidence','Recommendation','Datasheet'];
+    const chr=conflict.addRow(ch);headerStyle(chr);
+    if(st.conflicts.length){
+      for(const x of st.conflicts){
+        const row=conflict.addRow(x);bodyBorder(row);
+        row.getCell(5).font={bold:true,size:13,color:{argb:COLORS.redFont}};
+        row.getCell(5).fill={type:'pattern',pattern:'solid',fgColor:{argb:COLORS.red}};
+      }
+    }else{
+      conflict.addRow(['No conflict found','','','','','','','','目前未偵測到敏感 Net 上存在 PT/TP。','']);
+    }
+    conflict.columns=[{width:18},{width:14},{width:18},{width:9},{width:34},{width:20},{width:22},{width:12},{width:70},{width:44}];
+
+    // All PU pins: audit only
+    const audit=wb.addWorksheet('All PU Pins',{views:[{state:'frozen',ySplit:2}]});
+    const ah=['PU RefDes','IC MPN','Page','Pin Name','Pin No','Net Name','Electrical Type','Classification','Confidence','Category','Existing TP','Connected Components','Datasheet'];
+    const ahr=audit.addRow(ah);headerStyle(ahr);
+    for(const x of st.allPins){const row=audit.addRow(x);bodyBorder(row);}
+    audit.columns=[{width:14},{width:22},{width:28},{width:18},{width:9},{width:32},{width:16},{width:28},{width:12},{width:24},{width:18},{width:48},{width:44}];
+
+    // Rules
+    const rules=wb.addWorksheet('Rules',{views:[{state:'frozen',ySplit:2}]});
+    const rr=[
+      ['Rule group','Examples','Default action','Confidence','Reason','Limit / escalation'],
+      ['Feedback / sense','FB, VSENSE, SENSE, SNS, ISEN, TSEN, CS, ACP/ACN, SRP/SRN','NO TP','HIGH','Low-level / high-impedance regulation and sense nodes','Datasheet can refine actual pin voltage tolerance'],
+      ['Current-limit / compensation','ILIM, COMP, CMP, VREF','NO TP','HIGH','TP capacitance/leakage/ESD/float can disturb loop or pin','Keep compensation parts close to PU'],
+      ['PWM / SVI sensitive','PWM, SVD, SVC, SVTI, SVTO','NO TP','HIGH','Low-voltage control / timing integrity and accidental external voltage risk','Use approved debug method only if mandatory'],
+      ['Gate / switching control','HIDRV, LODRV, UGATE, LGATE, BATDRV, BOOT/BTST, PHASE','REVIEW','MEDIUM','High dv/dt or gate-drive path; TP adds parasitic / stub','Scope pad may be allowed by Power Engineer'],
+      ['Analog monitor','IMON, IAC, IBAT, PSYS','REVIEW','MEDIUM','Probe loading / ESD exposure may affect node','Review IC drive strength and debug requirement'],
+      ['Existing test point','PTxxxx/TPxxxx on flagged net','CONFLICT','HIGH','Existing TP conflicts with no-TP guidance','Power Engineer approval required']
+    ];
+    rr.forEach((x,i)=>{const row=rules.addRow(x);if(i===0)headerStyle(row);else bodyBorder(row);});
+    rules.columns=[{width:30},{width:54},{width:24},{width:16},{width:76},{width:76}];
+
+    const buffer=await wb.xlsx.writeBuffer();
+    const blob=new Blob([buffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const base=(st.fileName||'EXP').replace(/\.[^.]+$/,'').replace(/[^A-Za-z0-9_\-]+/g,'_');
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`PowerAI_Layout_NoTP_${base}.xlsx`;
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+  }
+
+  f.addEventListener('change',async e=>{
+    const file=e.target.files[0];if(!file)return;
+    status.textContent='讀取中：'+file.name;results.classList.add('hidden');
+    try{
+      const buf=await file.arrayBuffer(),text=new TextDecoder('windows-1252').decode(buf),p=parse(text);
+      st.parts=p.parts;st.partPins=p.partPins;st.netConns=p.netConns;st.fileName=file.name;
+      build();render();
+      status.textContent=`已讀取 ${file.name}：${st.pu.length} 顆實裝 PU、${st.noTp.length} 個 No-TP / Review Pin、${st.conflicts.length} 個 TP Conflict。`;
+    }catch(err){status.textContent='讀取失敗：'+err.message;}
+  });
+
+  $('sensExcelBtn').addEventListener('click',exportXlsx);
+})();
+</script>
+
 
 <script>
 (function(){
