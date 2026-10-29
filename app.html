@@ -407,12 +407,23 @@ function crossBadgeClass(type){
 function renderProviderStatus(data){
   const el=document.getElementById('providerStatus');if(!el)return;
   const p=data?.providers||{};
-  const rows=[
-    ['Nexar / Octopart',!!p.nexar],
-    ['Mouser',!!p.mouser]
-  ];
-  el.innerHTML=rows.map(([n,on])=>`<span class="provider-chip ${on?'ok':'off'}">${on?'●':'○'} ${n} · ${on?'Ready':'Not configured'}</span>`).join('')+
-    `<span class="provider-chip ${data?.online?'ok':'err'}">${data?.online?'✓ Online search ready':'! Add API credential in Render'}</span>`;
+  const v=data?.validation||{};
+  const chips=[];
+  chips.push(`<span class="provider-chip ${p.nexar?'ok':'off'}">${p.nexar?'●':'○'} Nexar / Octopart · ${p.nexar?'Configured':'Not configured'}</span>`);
+  if(!p.mouser){
+    chips.push('<span class="provider-chip off">○ Mouser · Not configured</span>');
+  }else if(v.mouser && v.mouser.valid===false){
+    chips.push(`<span class="provider-chip err">● Mouser · Invalid Search API Key</span>`);
+  }else if(v.mouser && v.mouser.valid===true){
+    chips.push('<span class="provider-chip ok">● Mouser · Validated</span>');
+  }else{
+    chips.push('<span class="provider-chip ok">● Mouser · Configured</span>');
+  }
+  chips.push(`<span class="provider-chip ${data?.online?'ok':'err'}">${data?.online?'✓ Online search ready':'! Online Bridge not ready'}</span>`);
+  if(v.mouser && v.mouser.valid===false && v.mouser.message){
+    chips.push(`<span class="provider-chip err" style="max-width:100%;white-space:normal">${esc(v.mouser.message)}</span>`);
+  }
+  el.innerHTML=chips.join('');
 }
 async function loadProviderStatus(){
   try{

@@ -11,10 +11,12 @@ from flask import Flask, send_file, jsonify, request
 BASE = Path(__file__).resolve().parent
 app = Flask(__name__)
 HTTP = requests.Session()
-HTTP.headers.update({"User-Agent": "PowerAI-2ndSource/1.5"})
+HTTP.headers.update({"User-Agent": "PowerAI-2ndSource/1.5.1"})
 
 NEXAR_TOKEN = {"value": None, "expires": 0.0}
 TOKEN_LOCK = threading.Lock()
+MOUSER_VALIDATION = {"at": 0.0, "valid": None, "message": ""}
+MOUSER_VALIDATION_LOCK = threading.Lock()
 
 STOPWORDS = {
     "the","and","with","for","from","this","that","into","power","management","integrated","circuit","ics",
@@ -52,7 +54,43 @@ def _safe_json(resp):
 
 
 def _mouser_key():
-    return os.environ.get("MOUSER_SEARCH_API_KEY", "").strip()
+    raw = os.environ.get("MOUSER_SEARCH_API_KEY", "").strip()
+    # Be forgiving when users paste the whole KEY=value line or wrap the value in quotes.
+    if raw.upper().startswith("MOUSER_SEARCH_API_KEY="):
+        raw = raw.split("=", 1)[1].strip()
+    raw = raw.strip().strip('"').strip("'").strip()
+    return raw
+
+
+def _friendly_mouser_error(msg):
+    text = str(msg or "")
+    if "invalid unique identifier" in text.lower():
+        return ("Mouser Search API Key 無效。請確認 Render Environment 的 "
+                "MOUSER_SEARCH_API_KEY 使用的是 Mouser『Search API』金鑰，而不是 Cart/Order API Key，"
+                "並且 Value 不要包含引號或 MOUSER_SEARCH_API_KEY= 前綴。")
+    return text
+
+
+def validate_mouser_key(force=False):
+    key = _mouser_key()
+    if not key:
+        return {"configured": False, "valid": False, "message": "Not configured"}
+    now = time.time()
+    with MOUSER_VALIDATION_LOCK:
+        if (not force and MOUSER_VALIDATION["valid"] is not None
+                and now - MOUSER_VALIDATION["at"] < 600):
+            return {"configured": True, "valid": MOUSER_VALIDATION["valid"],
+                    "message": MOUSER_VALIDATION["message"]}
+        try:
+            # One tiny real Search API call verifies the key; cache 10 minutes to conserve quota.
+            mouser_post("keyword", {"SearchByKeywordRequest": {
+                "keyword": "BQ27510", "records": 1, "startingRecord": 0, "searchOptions": "None"
+            }})
+            valid, message = True, "Search API key validated"
+        except Exception as e:
+            valid, message = False, _friendly_mouser_error(str(e))
+        MOUSER_VALIDATION.update({"at": now, "valid": valid, "message": message})
+        return {"configured": True, "valid": valid, "message": message}
 
 
 def _nexar_creds():
@@ -447,7 +485,7 @@ def search_crossref(mpn):
                 source = _merge(source, msrc) if source else msrc
                 if "Mouser" not in source_providers: source_providers.append("Mouser")
         except Exception as e:
-            errors.append(str(e))
+            errors.append(_friendly_mouser_error(str(e)))
 
     if not source:
         raise RuntimeError("找不到 Original IC：" + mpn + ("；" + "；".join(errors) if errors else ""))
@@ -489,7 +527,7 @@ def search_crossref(mpn):
                 enriched.append(merged)
             candidates = enriched
         except Exception as e:
-            errors.append(str(e))
+            errors.append(_friendly_mouser_error(str(e)))
 
     # If no Nexar candidates, or fewer than five, supplement with Mouser discovery.
     if status["mouser"] and len(candidates) < 5:
@@ -502,7 +540,7 @@ def search_crossref(mpn):
                 if len(candidates) >= 8:
                     break
         except Exception as e:
-            errors.append(str(e))
+            errors.append(_friendly_mouser_error(str(e)))
 
     # Re-score and keep sane public output.
     uniq = {}
@@ -562,7 +600,18 @@ def health():
 @app.get("/api/provider-status")
 def api_provider_status():
     p = provider_status()
-    return jsonify({"ok": True, "online": any(p.values()), "providers": p})
+    validation = {}
+    mouser_ok = False
+    if p.get("mouser"):
+        validation["mouser"] = validate_mouser_key()
+        mouser_ok = bool(validation["mouser"].get("valid"))
+    else:
+        validation["mouser"] = {"configured": False, "valid": False, "message": "Not configured"}
+    # Nexar remains configuration-based here; actual authorization is checked on search.
+    validation["nexar"] = {"configured": bool(p.get("nexar")), "valid": None,
+                           "message": "Configured; authorization is checked on search" if p.get("nexar") else "Not configured"}
+    online = mouser_ok or bool(p.get("nexar"))
+    return jsonify({"ok": True, "online": online, "providers": p, "validation": validation})
 
 
 @app.post("/api/crossref")
